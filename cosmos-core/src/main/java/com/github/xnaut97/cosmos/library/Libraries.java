@@ -1,6 +1,5 @@
 package com.github.xnaut97.cosmos.library;
 
-import com.alessiodp.libby.Library;
 import lombok.Getter;
 
 @Getter
@@ -53,17 +52,4 @@ public enum Libraries implements LibraryObject {
         this.repository = repository;
     }
 
-    @Override
-    public Library createLibrary() {
-        Library.Builder builder = Library.builder()
-                .groupId(getGroupId())
-                .artifactId(getArtifactId())
-                .loaderId(getId())
-                .version(getVersion());
-
-        if (getRepository() != null)
-            builder.repository(getRepository());
-
-        return builder.build();
-    }
 }
