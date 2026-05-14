@@ -25,10 +25,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cosmos.core.version>1.0.1</cosmos.core.version>
-        <cosmos.menu.version>1.0.1</cosmos.menu.version>
-        <cosmos.command.version>1.0</cosmos.command.version>
-        <cosmos.utilities.version>1.0</cosmos.utilities.version>
+        <cosmos-version>1.0</cosmos-version>
 
         <spigot-api.version>1.13-R0.1-SNAPSHOT</spigot-api.version>
         <authlib.version>6.0.58</authlib.version>

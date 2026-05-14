@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>cosmos-utilities</artifactId>
-    <version>${cosmos.utilities.version}</version>
+    <version>${cosmos.version}</version>
 
     <dependencies>
         <dependency>

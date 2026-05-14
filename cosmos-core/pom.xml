@@ -12,19 +12,11 @@
     </parent>
 
     <artifactId>cosmos-core</artifactId>
-    <version>${cosmos.core.version}</version>
+    <version>${cosmos.version}</version>
     <packaging>jar</packaging>
 
     <name>Cosmos Core</name>
     <description>Core plugin bootstrap and shared library loading utilities for Cosmos.</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>net.byteflux</groupId>
-            <artifactId>libby-bukkit</artifactId>
-            <version>1.3.1</version>
-        </dependency>
-    </dependencies>
 
     <build>
         <resources>

@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>cosmos-menu</artifactId>
-    <version>${cosmos.menu.version}</version>
+    <version>${cosmos.version}</version>
     <packaging>jar</packaging>
 
     <name>Cosmos Menu</name>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cosmos-core</artifactId>
-            <version>${cosmos.core.version}</version>
+            <version>${cosmos.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
@@ -33,7 +33,7 @@
         <dependency>
             <groupId>com.github.xnaut97</groupId>
             <artifactId>cosmos-utilities</artifactId>
-            <version>${cosmos.utilities.version}</version>
+            <version>${cosmos.version}</version>
         </dependency>
     </dependencies>
 </project>

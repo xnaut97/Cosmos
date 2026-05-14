@@ -12,7 +12,7 @@
     </parent>
 
     <artifactId>cosmos-command</artifactId>
-    <version>${cosmos.command.version}</version>
+    <version>${cosmos.version}</version>
     <packaging>jar</packaging>
 
     <name>Cosmos Command</name>
@@ -22,12 +22,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cosmos-core</artifactId>
-            <version>${cosmos.core.version}</version>
+            <version>${cosmos.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cosmos-utilities</artifactId>
-            <version>${cosmos.utilities.version}</version>
+            <version>${cosmos.version}</version>
         </dependency>
     </dependencies>
 </project>
