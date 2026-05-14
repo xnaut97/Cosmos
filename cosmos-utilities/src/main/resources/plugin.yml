@@ -1,0 +1,5 @@
+name: cosmos-utilities
+version: '${version}'
+
+main: com.github.xnaut97.cosmosUtilities.CosmosUtilities
+api-version: '1.18'
