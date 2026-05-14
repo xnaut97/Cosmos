@@ -25,8 +25,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <cosmos.core.version>1.0</cosmos.core.version>
-        <cosmos.menu.version>1.0</cosmos.menu.version>
+        <cosmos.core.version>1.0.1</cosmos.core.version>
+        <cosmos.menu.version>1.0.1</cosmos.menu.version>
         <cosmos.command.version>1.0</cosmos.command.version>
         <cosmos.utilities.version>1.0</cosmos.utilities.version>
 
