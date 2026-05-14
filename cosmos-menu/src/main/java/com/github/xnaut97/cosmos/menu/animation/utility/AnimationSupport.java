@@ -14,7 +14,11 @@ public final class AnimationSupport {
     }
 
     public static String id(String id, String fallback) {
-        return id == null || id.isBlank() ? fallback : id;
+        return isBlank(id) ? fallback : id;
+    }
+
+    public static boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
     }
 
     public static long ticks(Long value, long fallback) {

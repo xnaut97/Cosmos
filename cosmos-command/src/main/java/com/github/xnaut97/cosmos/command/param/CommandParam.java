@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -40,18 +41,20 @@ public abstract class CommandParam {
         if (value == null || value.isEmpty()) {
             return placeholders.stream()
                     .map(s -> s.replace("&", "§"))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
         List<String> testResult = test(value);
         if (testResult != null) {
             return testResult.stream()
                     .map(s -> s.replace("&", "§"))
-                    .toList();
+                    .collect(Collectors.toList());
         }
 
 
-        return placeholders.stream().filter(s -> s.startsWith(value)).toList();
+        return placeholders.stream()
+                .filter(s -> s.startsWith(value))
+                .collect(Collectors.toList());
     }
 
 }

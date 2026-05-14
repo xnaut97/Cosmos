@@ -1,5 +1,5 @@
 name: Cosmos
-version: '${version}'
+version: '${project.version}'
 
 main: com.github.xnaut97.cosmos.CosmosPlugin
 api-version: '1.18'

@@ -7,12 +7,11 @@
     <parent>
         <groupId>com.github.xnaut97</groupId>
         <artifactId>cosmos</artifactId>
-        <version>parent</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>cosmos-menu</artifactId>
-    <version>${cosmos.version}</version>
     <packaging>jar</packaging>
 
     <name>Cosmos Menu</name>
@@ -22,18 +21,26 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>cosmos-core</artifactId>
-            <version>${cosmos.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cosmos-utilities</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.cryptomorin</groupId>
             <artifactId>XSeries</artifactId>
-            <version>13.6.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.xnaut97</groupId>
-            <artifactId>cosmos-utilities</artifactId>
-            <version>${cosmos.version}</version>
+            <groupId>com.mojang</groupId>
+            <artifactId>authlib</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
     </dependencies>
 </project>

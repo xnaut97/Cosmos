@@ -93,7 +93,7 @@ public class TypingAnimation extends AbstractRepeatingAnimation {
     }
 
     private String formatValue(Object value, boolean percentageValue) {
-        if (valueFormat != null && !valueFormat.isBlank()) {
+        if (!AnimationSupport.isBlank(valueFormat)) {
             try {
                 return String.format(Locale.US, valueFormat, value);
             } catch (IllegalFormatException ignored) {

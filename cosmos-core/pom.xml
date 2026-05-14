@@ -7,16 +7,30 @@
     <parent>
         <groupId>com.github.xnaut97</groupId>
         <artifactId>cosmos</artifactId>
-        <version>parent</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>cosmos-core</artifactId>
-    <version>${cosmos.version}</version>
     <packaging>jar</packaging>
 
     <name>Cosmos Core</name>
     <description>Core plugin bootstrap and shared library loading utilities for Cosmos.</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <resources>
