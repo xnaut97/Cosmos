@@ -23,6 +23,7 @@
             <groupId>com.alessiodp.libby</groupId>
             <artifactId>libby-bukkit</artifactId>
             <version>${libby.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
