@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @Getter(AccessLevel.PROTECTED)
 @Setter
 @Accessors(fluent = true)
-public abstract class SelectorMenu<T, P extends Plugin> extends PaginationMenu {
+public abstract class SelectorMenu<T> extends PaginationMenu {
 
     private final Menu menu;
     private BiPredicate<ClickType, T> onClick;
@@ -27,7 +27,7 @@ public abstract class SelectorMenu<T, P extends Plugin> extends PaginationMenu {
     private Predicate<T> onValidate;
     private Predicate<T> onFilter;
 
-    public SelectorMenu(P plugin, int rows, String title, Menu menu) {
+    public SelectorMenu(Plugin plugin, int rows, String title, Menu menu) {
         super(plugin, rows, title);
         this.menu = menu;
 
