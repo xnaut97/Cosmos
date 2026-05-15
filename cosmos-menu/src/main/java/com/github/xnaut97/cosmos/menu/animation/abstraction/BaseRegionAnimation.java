@@ -37,7 +37,7 @@ public abstract class BaseRegionAnimation extends AbstractRepeatingAnimation {
     }
 
     @Override
-    public void onStart(Menu<?> menu) {
+    public void onStart(Menu menu) {
         super.onStart(menu);
         if (lastRendered.length != slots.length) {
             lastRendered = new ItemStack[slots.length];
@@ -49,7 +49,7 @@ public abstract class BaseRegionAnimation extends AbstractRepeatingAnimation {
     }
 
     @Override
-    public void onStop(Menu<?> menu) {
+    public void onStop(Menu menu) {
         if (!clearOnStop) {
             return;
         }
@@ -74,7 +74,7 @@ public abstract class BaseRegionAnimation extends AbstractRepeatingAnimation {
         return AnimationSupport.itemAt(palette, index);
     }
 
-    protected final void renderAt(Menu<?> menu, int regionIndex, ItemStack item) {
+    protected final void renderAt(Menu menu, int regionIndex, ItemStack item) {
         if (regionIndex < 0 || regionIndex >= slots.length) {
             return;
         }
@@ -87,17 +87,17 @@ public abstract class BaseRegionAnimation extends AbstractRepeatingAnimation {
         initialized[regionIndex] = true;
     }
 
-    protected final void renderAbsolute(Menu<?> menu, int slot, ItemStack item) {
+    protected final void renderAbsolute(Menu menu, int slot, ItemStack item) {
         menu.renderSlot(slot, item);
     }
 
-    protected final void fill(Menu<?> menu, ItemStack item) {
+    protected final void fill(Menu menu, ItemStack item) {
         for (int i = 0; i < slots.length; i++) {
             renderAt(menu, i, item);
         }
     }
 
-    protected final void clear(Menu<?> menu) {
+    protected final void clear(Menu menu) {
         fill(menu, backgroundItem);
     }
 }

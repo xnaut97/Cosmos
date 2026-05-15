@@ -46,21 +46,21 @@ public class InputComponent implements MenuComponent {
     }
 
     @Override
-    public void onAttach(Menu<?> menu) {
+    public void onAttach(Menu menu) {
         for (Integer slot : slots) {
             menu.allowItemInput(slot);
         }
     }
 
     @Override
-    public void onDetach(Menu<?> menu) {
+    public void onDetach(Menu menu) {
         for (Integer slot : slots) {
             menu.denyItemInput(slot);
         }
     }
 
     @Override
-    public void render(Menu<?> menu) {
+    public void render(Menu menu) {
         for (Integer slot : slots) {
             ItemStack item = menu.getInventory().getItem(slot);
             menu.renderSlot(slot, item == null ? new ItemStack(Material.AIR) : item);
@@ -68,7 +68,7 @@ public class InputComponent implements MenuComponent {
     }
 
     @Override
-    public void onClick(Menu<?> menu, org.bukkit.event.inventory.InventoryClickEvent event) {
+    public void onClick(Menu menu, org.bukkit.event.inventory.InventoryClickEvent event) {
         int rawSlot = event.getRawSlot();
         if (slots.contains(rawSlot)) {
             Bukkit.getScheduler().runTask(menu.getPlugin(), () -> inspect(menu, rawSlot));
@@ -76,7 +76,7 @@ public class InputComponent implements MenuComponent {
     }
 
     @Override
-    public void onDrag(Menu<?> menu, InventoryDragEvent event) {
+    public void onDrag(Menu menu, InventoryDragEvent event) {
         for (Integer rawSlot : event.getRawSlots()) {
             if (!slots.contains(rawSlot)) {
                 continue;
@@ -87,21 +87,21 @@ public class InputComponent implements MenuComponent {
     }
 
     @Override
-    public boolean canDragInto(Menu<?> menu, int slot) {
+    public boolean canDragInto(Menu menu, int slot) {
         return slots.contains(slot);
     }
 
     @Override
-    public boolean canPlace(Menu<?> menu, int slot, ItemStack item) {
+    public boolean canPlace(Menu menu, int slot, ItemStack item) {
         return slots.contains(slot);
     }
 
     @Override
-    public boolean canTake(Menu<?> menu, int slot) {
+    public boolean canTake(Menu menu, int slot) {
         return slots.contains(slot);
     }
 
-    private void inspect(Menu<?> menu, int slot) {
+    private void inspect(Menu menu, int slot) {
         ItemStack item = menu.getInventory().getItem(slot);
         if (item != null && item.getType() != Material.AIR && !validator.test(item)) {
             menu.renderSlot(slot, null);

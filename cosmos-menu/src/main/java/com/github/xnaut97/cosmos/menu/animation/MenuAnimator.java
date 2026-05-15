@@ -11,12 +11,12 @@ import java.util.Objects;
 
 public class MenuAnimator {
 
-    private final Menu<?> menu;
+    private final Menu menu;
     private final Map<String, Animation> animations = new LinkedHashMap<>();
     private final Map<String, BukkitTask> tasks = new HashMap<>();
     private final Map<String, Long> frames = new HashMap<>();
 
-    public MenuAnimator(Menu<?> menu) {
+    public MenuAnimator(Menu menu) {
         this.menu = menu;
     }
 

@@ -37,10 +37,10 @@ import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 
 @Getter
-public abstract class Menu<P extends Plugin> implements InventoryHolder {
+public abstract class Menu implements InventoryHolder {
 
     private final UUID uuid = UUID.randomUUID();
-    private final P plugin;
+    private final Plugin plugin;
     private final int size;
     private final String title;
     private final Inventory inventory;
@@ -63,18 +63,23 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
     private MenuState state = new MenuState();
     private Player player;
 
-    public Menu(P plugin, int rows, String title) {
+    public Menu(Plugin plugin, int rows, String title) {
         this.plugin = Objects.requireNonNull(plugin, "plugin");
         this.size = 9 * Math.max(0, Math.min(6, rows));
         this.title = title;
         this.inventory = Bukkit.createInventory(this, size, title);
     }
 
+    @SuppressWarnings("unchecked")
+    public final <T extends Plugin> T getPlugin() {
+        return (T) plugin;
+    }
+
     public static void registerListeners(Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onClose(InventoryCloseEvent event) {
-                Menu<?> menu = menuFrom(event.getInventory());
+                Menu menu = menuFrom(event.getInventory());
                 if (menu != null) {
                     menu.onClose(event);
                 }
@@ -82,7 +87,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
 
             @EventHandler
             public void onOpen(InventoryOpenEvent event) {
-                Menu<?> menu = menuFrom(event.getInventory());
+                Menu menu = menuFrom(event.getInventory());
                 if (menu != null) {
                     menu.onOpen(event);
                 }
@@ -91,7 +96,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
             @EventHandler
             public void onClick(InventoryClickEvent event) {
                 Inventory topInventory = event.getView().getTopInventory();
-                Menu<?> menu = menuFrom(topInventory);
+                Menu menu = menuFrom(topInventory);
                 if (menu != null) {
                     menu.onClick(event);
                 }
@@ -100,7 +105,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
             @EventHandler
             public void onDrag(InventoryDragEvent event) {
                 Inventory topInventory = event.getView().getTopInventory();
-                Menu<?> menu = menuFrom(topInventory);
+                Menu menu = menuFrom(topInventory);
                 if (menu != null) {
                     menu.onDrag(event);
                 }
@@ -108,14 +113,14 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
         }, plugin);
     }
 
-    private static Menu<?> menuFrom(Inventory inventory) {
+    private static Menu menuFrom(Inventory inventory) {
         if (inventory == null) {
             return null;
         }
 
         InventoryHolder holder = inventory.getHolder();
         if(holder instanceof Menu)
-            return (Menu<?>) holder;
+            return (Menu) holder;
 
         return null;
     }
@@ -292,7 +297,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
         previousRenderMap.clear();
     }
 
-    public Menu<P> addComponent(MenuComponent component) {
+    public Menu addComponent(MenuComponent component) {
         Objects.requireNonNull(component, "component");
         components.add(component);
         component.onAttach(this);
@@ -305,7 +310,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
         return this;
     }
 
-    public Menu<P> removeComponent(MenuComponent component) {
+    public Menu removeComponent(MenuComponent component) {
         if (component == null) {
             return this;
         }
@@ -331,49 +336,49 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
         }
     }
 
-    public Menu<P> allowItemInput(int slot) {
+    public Menu allowItemInput(int slot) {
         allowPlace(slot);
         allowTake(slot);
         allowDrag(slot);
         return this;
     }
 
-    public Menu<P> denyItemInput(int slot) {
+    public Menu denyItemInput(int slot) {
         placeableSlots.remove(slot);
         takeableSlots.remove(slot);
         draggableSlots.remove(slot);
         return this;
     }
 
-    public Menu<P> allowPlace(int slot) {
+    public Menu allowPlace(int slot) {
         validateSlot(slot);
         placeableSlots.add(slot);
         return this;
     }
 
-    public Menu<P> allowTake(int slot) {
+    public Menu allowTake(int slot) {
         validateSlot(slot);
         takeableSlots.add(slot);
         return this;
     }
 
-    public Menu<P> allowDrag(int slot) {
+    public Menu allowDrag(int slot) {
         validateSlot(slot);
         draggableSlots.add(slot);
         return this;
     }
 
-    public Menu<P> canDragInto(IntPredicate predicate) {
+    public Menu canDragInto(IntPredicate predicate) {
         this.customCanDragInto = predicate;
         return this;
     }
 
-    public Menu<P> canPlace(BiPredicate<Integer, ItemStack> predicate) {
+    public Menu canPlace(BiPredicate<Integer, ItemStack> predicate) {
         this.customCanPlace = predicate;
         return this;
     }
 
-    public Menu<P> canTake(IntPredicate predicate) {
+    public Menu canTake(IntPredicate predicate) {
         this.customCanTake = predicate;
         return this;
     }
@@ -483,7 +488,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
         animator.stopAllAnimations();
     }
 
-    public Menu<P> fillSlots(Collection<Integer> slots, ItemStack item) {
+    public Menu fillSlots(Collection<Integer> slots, ItemStack item) {
         for (Integer slot : slots) {
             if (isMenuSlot(slot)) {
                 addComponent(new StaticItemComponent(slot, item)
@@ -493,23 +498,23 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
         return this;
     }
 
-    public Menu<P> fillBorder(ItemStack item) {
+    public Menu fillBorder(ItemStack item) {
         return fillSlots(MenuLayout.border(size), item);
     }
 
-    public Menu<P> fillRow(int row, ItemStack item) {
+    public Menu fillRow(int row, ItemStack item) {
         return fillSlots(MenuLayout.row(row), item);
     }
 
-    public Menu<P> fillColumn(int column, ItemStack item) {
+    public Menu fillColumn(int column, ItemStack item) {
         return fillSlots(MenuLayout.column(column, size / 9), item);
     }
 
-    public Menu<P> fillRectangle(int startSlot, int width, int height, ItemStack item) {
+    public Menu fillRectangle(int startSlot, int width, int height, ItemStack item) {
         return fillSlots(MenuLayout.rectangle(startSlot, width, height), item);
     }
 
-    public Menu<P> fillCircle(int centerSlot, int radius, ItemStack item) {
+    public Menu fillCircle(int centerSlot, int radius, ItemStack item) {
         return fillSlots(MenuLayout.circle(centerSlot, radius, size), item);
     }
 
@@ -625,7 +630,7 @@ public abstract class Menu<P extends Plugin> implements InventoryHolder {
     public static void forceCloseAll() {
         Bukkit.getOnlinePlayers().forEach(player -> {
             Inventory inv = player.getOpenInventory().getTopInventory();
-            if (inv.getHolder() instanceof Menu<?>) {
+            if (inv.getHolder() instanceof Menu) {
                 player.closeInventory();
             }
         });

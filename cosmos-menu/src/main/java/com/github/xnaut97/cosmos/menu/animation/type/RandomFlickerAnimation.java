@@ -51,7 +51,7 @@ public class RandomFlickerAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         if (!hasSlots()) {
             return;
         }

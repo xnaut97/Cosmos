@@ -47,7 +47,7 @@ public class BorderTrailAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         clear(menu);
         for (int i = 0; i < trailLength; i++) {
             int index = AnimationSupport.floorMod(frame - i, slotCount());

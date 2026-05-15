@@ -54,7 +54,7 @@ public class PaginationComponent implements MenuComponent {
     }
 
     @Override
-    public void render(Menu<?> menu) {
+    public void render(Menu menu) {
         int page = Math.max(0, currentPage.getAsInt());
         int max = Math.max(0, maxPage.getAsInt());
 
@@ -73,7 +73,7 @@ public class PaginationComponent implements MenuComponent {
     }
 
     @Override
-    public void onClick(Menu<?> menu, org.bukkit.event.inventory.InventoryClickEvent event) {
+    public void onClick(Menu menu, org.bukkit.event.inventory.InventoryClickEvent event) {
         int rawSlot = event.getRawSlot();
         ButtonType clickedType = null;
         for (Map.Entry<ButtonType, Integer> entry : slots.entrySet()) {

@@ -7,7 +7,7 @@ import lombok.Getter;
 public final class AnimationResponse {
 
     private final Animation animation;
-    private final Menu<?> menu;
+    private final Menu menu;
     private final AnimationState state;
     private final AnimationResult result;
     private final long frame;
@@ -15,7 +15,7 @@ public final class AnimationResponse {
     private final double threshold;
 
     public AnimationResponse(Animation animation,
-                             Menu<?> menu,
+                             Menu menu,
                              AnimationState state,
                              AnimationResult result,
                              long frame,

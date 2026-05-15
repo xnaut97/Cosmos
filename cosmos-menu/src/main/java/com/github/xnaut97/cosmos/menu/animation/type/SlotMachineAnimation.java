@@ -41,7 +41,7 @@ public class SlotMachineAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         boolean finished = frame + 1L >= durationFrames;
         for (int i = 0; i < slotCount(); i++) {
             renderAt(menu, i, finished ? resultItems[i % resultItems.length] : paletteAt(frame + i * 3L));

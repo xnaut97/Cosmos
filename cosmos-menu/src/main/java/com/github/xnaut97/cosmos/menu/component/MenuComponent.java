@@ -15,39 +15,39 @@ public interface MenuComponent {
         return Collections.emptySet();
     }
 
-    default void onAttach(Menu<?> menu) {
+    default void onAttach(Menu menu) {
     }
 
-    default void onDetach(Menu<?> menu) {
+    default void onDetach(Menu menu) {
     }
 
-    default void render(Menu<?> menu) {
+    default void render(Menu menu) {
     }
 
-    default void onRender(Menu<?> menu) {
+    default void onRender(Menu menu) {
     }
 
-    default void onUpdate(Menu<?> menu) {
+    default void onUpdate(Menu menu) {
     }
 
-    default void onClick(Menu<?> menu, InventoryClickEvent event) {
+    default void onClick(Menu menu, InventoryClickEvent event) {
     }
 
-    default void onDrag(Menu<?> menu, InventoryDragEvent event) {
+    default void onDrag(Menu menu, InventoryDragEvent event) {
     }
 
-    default void onClose(Menu<?> menu, InventoryCloseEvent event) {
+    default void onClose(Menu menu, InventoryCloseEvent event) {
     }
 
-    default boolean canDragInto(Menu<?> menu, int slot) {
+    default boolean canDragInto(Menu menu, int slot) {
         return false;
     }
 
-    default boolean canPlace(Menu<?> menu, int slot, ItemStack item) {
+    default boolean canPlace(Menu menu, int slot, ItemStack item) {
         return false;
     }
 
-    default boolean canTake(Menu<?> menu, int slot) {
+    default boolean canTake(Menu menu, int slot) {
         return false;
     }
 }

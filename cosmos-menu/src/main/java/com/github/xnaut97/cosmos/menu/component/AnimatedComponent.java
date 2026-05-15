@@ -14,12 +14,12 @@ public class AnimatedComponent implements MenuComponent {
     }
 
     @Override
-    public void onAttach(Menu<?> menu) {
+    public void onAttach(Menu menu) {
         menu.registerAnimation(animation);
     }
 
     @Override
-    public void onDetach(Menu<?> menu) {
+    public void onDetach(Menu menu) {
         menu.stopAnimation(animation.getId());
     }
 }

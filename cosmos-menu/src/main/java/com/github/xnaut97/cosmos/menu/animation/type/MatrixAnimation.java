@@ -46,7 +46,7 @@ public class MatrixAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int cycle = rows + trailLength;
         for (int i = 0; i < slotCount(); i++) {
             int slot = slotAt(i);

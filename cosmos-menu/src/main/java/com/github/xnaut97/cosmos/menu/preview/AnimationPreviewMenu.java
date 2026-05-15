@@ -9,7 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public final class AnimationPreviewMenu<P extends Plugin> extends Menu<P> {
+public final class AnimationPreviewMenu<P extends Plugin> extends Menu {
 
     private static final int BACK_SLOT = 45;
     private static final int TOGGLE_SLOT = 47;

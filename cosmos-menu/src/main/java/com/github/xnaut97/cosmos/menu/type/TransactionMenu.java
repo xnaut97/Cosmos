@@ -16,13 +16,13 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class TransactionMenu<P extends Plugin> extends Menu<P> {
+public abstract class TransactionMenu extends Menu {
 
     private final Set<Integer> loadingSlots = new LinkedHashSet<>();
     private final Map<Integer, ItemStack> lockSnapshot = new HashMap<>();
     private BukkitTask lockTimeoutTask;
 
-    public TransactionMenu(P plugin, int rows, String title) {
+    public TransactionMenu(Plugin plugin, int rows, String title) {
         super(plugin, rows, title);
         setState(new TransactionState());
     }
@@ -71,12 +71,12 @@ public abstract class TransactionMenu<P extends Plugin> extends Menu<P> {
     }
 
 
-    public TransactionMenu<P> loadingItem(ItemStack item) {
+    public TransactionMenu loadingItem(ItemStack item) {
         getState().loadingItem(item);
         return this;
     }
 
-    public TransactionMenu<P> loadingSlot(int slot) {
+    public TransactionMenu loadingSlot(int slot) {
         loadingSlots.add(slot);
         return this;
     }

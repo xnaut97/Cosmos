@@ -61,7 +61,7 @@ public class ProgressBarAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int filled = (int) Math.min(slotCount(), ((frame + 1L) * slotCount() + durationFrames - 1L) / durationFrames);
         double percent = Math.min(100.0D, ((frame + 1.0D) * 100.0D) / durationFrames);
         ItemStack activeItem = progressItem(percent);

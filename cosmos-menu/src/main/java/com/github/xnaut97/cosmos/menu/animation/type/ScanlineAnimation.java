@@ -54,7 +54,7 @@ public class ScanlineAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int active = activeLine(frame);
 
         for (int i = 0; i < slotCount(); i++) {

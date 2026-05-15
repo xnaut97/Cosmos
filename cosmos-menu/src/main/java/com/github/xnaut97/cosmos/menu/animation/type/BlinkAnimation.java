@@ -44,7 +44,7 @@ public class BlinkAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         boolean on = (frame / intervalFrames) % 2L == 0L;
         fill(menu, on ? onItem : offItem);
     }

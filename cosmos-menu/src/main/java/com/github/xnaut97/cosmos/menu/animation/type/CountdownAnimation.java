@@ -58,7 +58,7 @@ public class CountdownAnimation extends AbstractRepeatingAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int remaining = Math.max(0, seconds - (int) (frame / framesPerSecond));
         menu.renderSlot(slot, countdownItem(remaining));
     }

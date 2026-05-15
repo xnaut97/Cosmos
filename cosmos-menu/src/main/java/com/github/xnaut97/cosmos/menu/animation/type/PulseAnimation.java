@@ -40,7 +40,7 @@ public class PulseAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         fill(menu, paletteAt(frame / holdFrames));
     }
 }

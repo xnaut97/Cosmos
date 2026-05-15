@@ -15,7 +15,7 @@ public interface Animation {
         return 1L;
     }
 
-    void tick(Menu<?> menu, long frame);
+    void tick(Menu menu, long frame);
 
     default AnimationState getState() {
         return AnimationState.IDLE;
@@ -39,9 +39,9 @@ public interface Animation {
         return state == AnimationState.COMPLETED || state == AnimationState.CANCELLED;
     }
 
-    default void onStart(Menu<?> menu) {
+    default void onStart(Menu menu) {
     }
 
-    default void onStop(Menu<?> menu) {
+    default void onStop(Menu menu) {
     }
 }

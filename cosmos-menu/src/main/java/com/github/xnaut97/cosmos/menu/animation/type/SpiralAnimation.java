@@ -48,7 +48,7 @@ public class SpiralAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         clear(menu);
         for (int i = 0; i < trailLength; i++) {
             renderAt(menu, AnimationSupport.floorMod(frame - i, slotCount()), i == 0 ? activeItem : paletteAt(i));

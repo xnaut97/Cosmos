@@ -40,7 +40,7 @@ public class BreathingAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         fill(menu, paletteAt(AnimationSupport.pingPong(frame / holdFrames, getPalette().length)));
     }
 }

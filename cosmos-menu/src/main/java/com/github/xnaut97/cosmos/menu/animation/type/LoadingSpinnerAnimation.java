@@ -52,7 +52,7 @@ public class LoadingSpinnerAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         if (!hasSlots()) {
             return;
         }
@@ -69,7 +69,7 @@ public class LoadingSpinnerAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    public void onStart(Menu<?> menu) {
+    public void onStart(Menu menu) {
         super.onStart(menu);
         previousActiveIndex = -1;
     }

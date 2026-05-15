@@ -45,7 +45,7 @@ public class SlotSwapAnimation extends AbstractRepeatingAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         if (frame + 1L >= durationFrames) {
             menu.renderSlot(firstSlot, secondItem);
             menu.renderSlot(secondSlot, firstItem);

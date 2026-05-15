@@ -194,12 +194,12 @@ public class SlotComponent implements MenuComponent {
     }
 
     @Override
-    public void render(Menu<?> menu) {
+    public void render(Menu menu) {
         menu.renderSlot(slot, itemSupplier.get());
     }
 
     @Override
-    public void onClick(Menu<?> menu, InventoryClickEvent event) {
+    public void onClick(Menu menu, InventoryClickEvent event) {
         if (cancelClick) {
             event.setCancelled(true);
         }
@@ -213,31 +213,31 @@ public class SlotComponent implements MenuComponent {
     }
 
     @Override
-    public void onClose(Menu<?> menu, InventoryCloseEvent event) {
+    public void onClose(Menu menu, InventoryCloseEvent event) {
         if (closeHandler != null) {
             closeHandler.accept(event);
         }
     }
 
     @Override
-    public void onDrag(Menu<?> menu, InventoryDragEvent event) {
+    public void onDrag(Menu menu, InventoryDragEvent event) {
         if (dragHandler != null && event.getRawSlots().contains(slot)) {
             dragHandler.accept(event);
         }
     }
 
     @Override
-    public boolean canDragInto(Menu<?> menu, int slot) {
+    public boolean canDragInto(Menu menu, int slot) {
         return this.slot == slot && dragPredicate.test(slot);
     }
 
     @Override
-    public boolean canPlace(Menu<?> menu, int slot, ItemStack item) {
+    public boolean canPlace(Menu menu, int slot, ItemStack item) {
         return this.slot == slot && placePredicate.test(slot, item);
     }
 
     @Override
-    public boolean canTake(Menu<?> menu, int slot) {
+    public boolean canTake(Menu menu, int slot) {
         return this.slot == slot && takePredicate.test(slot);
     }
 }

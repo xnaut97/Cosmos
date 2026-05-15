@@ -50,7 +50,7 @@ public class ChestOpenAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int radius = (int) (frame / revealEveryFrames);
         for (int i = 0; i < slotCount(); i++) {
             renderAt(menu, i, distances[i] <= radius ? revealItem : hiddenItem);

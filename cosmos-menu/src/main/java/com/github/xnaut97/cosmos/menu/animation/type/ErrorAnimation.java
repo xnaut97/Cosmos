@@ -43,7 +43,7 @@ public class ErrorAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int offset = (int) ((frame / shakeFrames) % 2L);
         for (int i = 0; i < slotCount(); i++) {
             renderAt(menu, i, i % 2 == offset ? errorItem : backgroundItem);

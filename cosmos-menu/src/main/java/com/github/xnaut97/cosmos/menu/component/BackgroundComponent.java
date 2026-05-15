@@ -26,7 +26,7 @@ public class BackgroundComponent implements MenuComponent {
         this.itemSupplier = itemSupplier;
     }
 
-    public static BackgroundComponent border(Menu<?> menu, ItemStack item) {
+    public static BackgroundComponent border(Menu menu, ItemStack item) {
         return new BackgroundComponent(MenuLayout.border(menu.getSize()), item);
     }
 
@@ -41,14 +41,14 @@ public class BackgroundComponent implements MenuComponent {
     }
 
     @Override
-    public void render(Menu<?> menu) {
+    public void render(Menu menu) {
         for (Integer slot : slots) {
             menu.renderSlot(slot, itemSupplier == null ? null : itemSupplier.get());
         }
     }
 
     @Override
-    public void onClick(Menu<?> menu, org.bukkit.event.inventory.InventoryClickEvent event) {
+    public void onClick(Menu menu, org.bukkit.event.inventory.InventoryClickEvent event) {
         event.setCancelled(true);
     }
 }

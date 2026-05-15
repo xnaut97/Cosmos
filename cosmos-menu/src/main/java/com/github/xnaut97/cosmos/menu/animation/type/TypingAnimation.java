@@ -63,7 +63,7 @@ public class TypingAnimation extends AbstractRepeatingAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         refreshFramesIfNeeded();
         menu.renderSlot(slot, frames[AnimationSupport.floorMod(frame, frames.length)]);
     }

@@ -56,7 +56,7 @@ public class CollapseAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int collapsedRadius = (int) (frame / collapseEveryFrames);
         int threshold = maxDistance - collapsedRadius;
         for (int i = 0; i < slotCount(); i++) {

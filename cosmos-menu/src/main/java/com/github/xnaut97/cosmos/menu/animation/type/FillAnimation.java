@@ -50,7 +50,7 @@ public class FillAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int filled = (int) Math.min(slotCount(), frame + 1L);
         for (int i = 0; i < traversal.length; i++) {
             renderAt(menu, traversal[i], i < filled ? fillItem : emptyItem);

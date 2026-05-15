@@ -32,7 +32,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
     private Consumer<AnimationResponse> cancelCallback;
     private Consumer<AnimationResponse> pauseCallback;
     private Consumer<AnimationResponse> resumeCallback;
-    private Menu<?> currentMenu;
+    private Menu currentMenu;
     private long lastFrame;
 
     protected AbstractRepeatingAnimation(String id, long delayTicks, long periodTicks, long maxFrames, boolean loop) {
@@ -64,7 +64,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
     }
 
     @Override
-    public final void tick(Menu<?> menu, long frame) {
+    public final void tick(Menu menu, long frame) {
         if (state == AnimationState.PAUSED || isComplete()) {
             return;
         }
@@ -91,7 +91,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
     }
 
     @Override
-    public void onStart(Menu<?> menu) {
+    public void onStart(Menu menu) {
         this.currentMenu = menu;
         this.lastFrame = 0L;
         this.state = AnimationState.RUNNING;
@@ -165,7 +165,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
         return (T) onProgress(percentage / 100.0D, callback);
     }
 
-    protected final void markCompleted(Menu<?> menu, long frame) {
+    protected final void markCompleted(Menu menu, long frame) {
         markCompleted(menu, frame, progress(frame));
     }
 
@@ -176,9 +176,9 @@ public abstract class AbstractRepeatingAnimation implements Animation {
         return Math.max(0.0D, Math.min(1.0D, (frame + 1.0D) / maxFrames));
     }
 
-    protected abstract void renderFrame(Menu<?> menu, long frame);
+    protected abstract void renderFrame(Menu menu, long frame);
 
-    private void markCompleted(Menu<?> menu, long frame, double progress) {
+    private void markCompleted(Menu menu, long frame, double progress) {
         if (isComplete()) {
             return;
         }
@@ -187,7 +187,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
         invoke(completeCallback, response(AnimationResult.COMPLETED, menu, frame, progress, 1.0D));
     }
 
-    private void triggerProgressCallbacks(Menu<?> menu, long frame, double progress) {
+    private void triggerProgressCallbacks(Menu menu, long frame, double progress) {
         if (progressCallbacks.isEmpty()) {
             return;
         }
@@ -204,7 +204,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
     }
 
     private AnimationResponse response(AnimationResult result,
-                                       Menu<?> menu,
+                                       Menu menu,
                                        long frame,
                                        double progress,
                                        double threshold) {
@@ -219,7 +219,7 @@ public abstract class AbstractRepeatingAnimation implements Animation {
         try {
             callback.accept(response);
         } catch (RuntimeException exception) {
-            Menu<?> responseMenu = response.getMenu();
+            Menu responseMenu = response.getMenu();
             if (responseMenu != null) {
                 responseMenu.getPlugin().getLogger().log(Level.SEVERE, "Animation callback failed for " + id, exception);
             } else {

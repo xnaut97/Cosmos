@@ -49,7 +49,7 @@ public class FireSpreadAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         int spread = (int) (frame / spreadEveryFrames);
         for (int i = 0; i < slotCount(); i++) {
             int distance = distances[i];

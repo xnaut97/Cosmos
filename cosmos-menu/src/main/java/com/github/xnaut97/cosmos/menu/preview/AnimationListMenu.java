@@ -1,11 +1,11 @@
 package com.github.xnaut97.cosmos.menu.preview;
 
-import com.github.xnaut97.cosmos.menu.type.PagedMenu;
+import com.github.xnaut97.cosmos.menu.type.PaginationMenu;
 import com.github.xnaut97.cosmos.utilities.ItemCreator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class AnimationListMenu<P extends Plugin> extends PagedMenu<P> {
+public class AnimationListMenu<P extends Plugin> extends PaginationMenu {
 
     public AnimationListMenu(P plugin) {
         super(plugin, 6, "&8Animation Gallery");
@@ -17,7 +17,7 @@ public class AnimationListMenu<P extends Plugin> extends PagedMenu<P> {
         for (AnimationDemo demo : AnimationDemo.values()) {
             addContent(new PagedContent(createButton(demo)).event(event -> {
                 event.setCancelled(true);
-                new AnimationPreviewMenu<P>(getPlugin(), demo).open(getPlayer());
+                new AnimationPreviewMenu(getPlugin(), demo).open(getPlayer());
             }));
         }
     }

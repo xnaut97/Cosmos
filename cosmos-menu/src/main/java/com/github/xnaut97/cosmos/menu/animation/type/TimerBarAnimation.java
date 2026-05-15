@@ -62,7 +62,7 @@ public class TimerBarAnimation extends BaseRegionAnimation {
     }
 
     @Override
-    protected void renderFrame(Menu<?> menu, long frame) {
+    protected void renderFrame(Menu menu, long frame) {
         long remainingFrames = Math.max(0L, durationFrames - frame);
         int remaining = (int) Math.min(slotCount(), (remainingFrames * slotCount() + durationFrames - 1L) / durationFrames);
         ItemStack activeItem = progressItem(frame, remainingFrames);

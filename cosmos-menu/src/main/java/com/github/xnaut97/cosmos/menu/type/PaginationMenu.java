@@ -18,14 +18,14 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-public abstract class PagedMenu<P extends Plugin> extends Menu<P> {
+public abstract class PaginationMenu extends Menu {
 
     private List<PagedContent> contents = new ArrayList<>();
     private final Map<PageButtonType, Integer> buttonSlots = new EnumMap<>(PageButtonType.class);
     private final Map<PageButtonType, ItemStack> buttonItems = new EnumMap<>(PageButtonType.class);
     private final List<Integer> itemSlots = new ArrayList<>();
 
-    public PagedMenu(P plugin, int rows, String title) {
+    public PaginationMenu(Plugin plugin, int rows, String title) {
         super(plugin, rows, title);
         setState(new PagedMenuState());
         if (getSize() > 18) {
