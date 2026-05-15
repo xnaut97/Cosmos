@@ -11,9 +11,4 @@ public abstract class BaseListener implements Listener {
 
     private final Plugin plugin;
 
-    @SuppressWarnings("unchecked")
-    protected final <T extends Plugin> T getPlugin() {
-        return (T) plugin;
-    }
-
 }

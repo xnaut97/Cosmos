@@ -70,11 +70,6 @@ public abstract class Menu implements InventoryHolder {
         this.inventory = Bukkit.createInventory(this, size, title);
     }
 
-    @SuppressWarnings("unchecked")
-    public final <T extends Plugin> T getPlugin() {
-        return (T) plugin;
-    }
-
     public static void registerListeners(Plugin plugin) {
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
