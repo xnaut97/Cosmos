@@ -11,37 +11,36 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>cosmos-core</artifactId>
+    <artifactId>cosmos-input</artifactId>
     <packaging>jar</packaging>
 
-    <name>Cosmos Core</name>
-    <description>Core plugin bootstrap and shared library loading utilities for Cosmos.</description>
+    <name>Cosmos Input</name>
+    <description>Typed chat and inventory input templates for Cosmos.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cosmos-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cosmos-menu</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>cosmos-utilities</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
+            <groupId>com.github.cryptomorin</groupId>
+            <artifactId>XSeries</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.github.xnaut97</groupId>
-            <artifactId>cosmos-utilities</artifactId>
-        </dependency>
     </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
 </project>

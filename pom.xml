@@ -21,9 +21,10 @@
     </scm>
 
     <modules>
-        <module>cosmos-core</module>
         <module>cosmos-utilities</module>
+        <module>cosmos-core</module>
         <module>cosmos-menu</module>
+        <module>cosmos-input</module>
         <module>cosmos-command</module>
     </modules>
 
@@ -63,6 +64,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>cosmos-menu</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cosmos-input</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

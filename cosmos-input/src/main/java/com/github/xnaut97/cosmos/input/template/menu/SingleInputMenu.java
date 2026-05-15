@@ -1,4 +1,4 @@
-package com.github.xnaut97.cosmos.menu.template;
+package com.github.xnaut97.cosmos.input.template.menu;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.github.xnaut97.cosmos.menu.Menu;

@@ -1,0 +1,9 @@
+target/
+build/
+.gradle/
+.idea/
+.git/
+logs/
+*.jar
+*.png
+*.zip
