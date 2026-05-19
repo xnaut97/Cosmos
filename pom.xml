@@ -23,6 +23,7 @@
     <modules>
         <module>cosmos-utilities</module>
         <module>cosmos-core</module>
+        <module>cosmos-database</module>
         <module>cosmos-menu</module>
         <module>cosmos-input</module>
         <module>cosmos-command</module>
@@ -54,6 +55,11 @@
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>cosmos-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cosmos-database</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

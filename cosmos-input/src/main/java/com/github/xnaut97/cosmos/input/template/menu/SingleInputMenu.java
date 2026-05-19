@@ -35,6 +35,8 @@ public class SingleInputMenu extends Menu {
     private ItemStack activeBackgroundItem = new ItemStack(Material.AIR);
     private ItemStack inactiveBackgroundItem = new ItemStack(Material.AIR);
 
+    private ItemStack input = null;
+
     public SingleInputMenu(Plugin plugin, String title) {
         super(plugin, 3, title);
     }
@@ -42,6 +44,8 @@ public class SingleInputMenu extends Menu {
     @Override
     protected void setup() {
         allowItemInput(inputSlot);
+
+        refreshBackground(input != null);
 
         setItem(exitSlot, new ItemCreator(Objects.requireNonNull(XMaterial.PLAYER_HEAD.parseItem()))
                 .setDisplayName("&cReturn")
@@ -57,10 +61,13 @@ public class SingleInputMenu extends Menu {
                 });
 
         setItem(confirmSlot, new ItemCreator(Objects.requireNonNull(XMaterial.PLAYER_HEAD.parseItem()))
-                .setDisplayName("&cReturn")
+                .setDisplayName("&aConfirm")
                 .build())
                 .onClick(event -> {
                     event.setCancelled(true);
+
+                    if(input == null) return;
+
                     onConfirm.accept(getPlayer(), getInventory().getItem(inputSlot));
                 });
 
@@ -85,12 +92,12 @@ public class SingleInputMenu extends Menu {
         boolean hasInput = validator.test(item);
         refreshBackground(hasInput);
         onInputChange.accept(getPlayer(), item);
+        this.input = item;
     }
 
     private void refreshBackground(boolean active) {
 
-        ItemStack background =
-                active ? activeBackgroundItem : inactiveBackgroundItem;
+        ItemStack background = active ? activeBackgroundItem : inactiveBackgroundItem;
 
         for (int i = 0; i < getInventory().getSize(); i++) {
 

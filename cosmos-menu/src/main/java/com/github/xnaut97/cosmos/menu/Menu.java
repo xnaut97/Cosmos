@@ -11,6 +11,7 @@ import com.github.xnaut97.cosmos.menu.state.MenuState;
 import com.github.xnaut97.cosmos.menu.state.TransactionState;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -36,7 +37,7 @@ import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 
-@Getter
+@Getter(AccessLevel.PROTECTED)
 public abstract class Menu implements InventoryHolder {
 
     private final UUID uuid = UUID.randomUUID();
@@ -68,6 +69,19 @@ public abstract class Menu implements InventoryHolder {
         this.size = 9 * Math.max(0, Math.min(6, rows));
         this.title = title;
         this.inventory = Bukkit.createInventory(this, size, title);
+    }
+
+    public Plugin getPlugin() {
+        return plugin;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    @Override
+    public Inventory getInventory() {
+        return inventory;
     }
 
     public static void registerListeners(Plugin plugin) {

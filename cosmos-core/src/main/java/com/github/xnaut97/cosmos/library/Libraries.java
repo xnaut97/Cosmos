@@ -11,7 +11,6 @@ public enum Libraries implements LibraryObject {
             "lombok_library",
             null
     ),
-
     NBT_API(
             "de.tr7zw",
             "item-nbt-api-plugin",
@@ -27,7 +26,6 @@ public enum Libraries implements LibraryObject {
             "hikari_cp_library",
             null
     ),
-
     XSERIES(
             "com.github.cryptomorin",
             "XSeries",
@@ -35,11 +33,25 @@ public enum Libraries implements LibraryObject {
             "xseries_library",
             null
     ),
+    MONGO_DB(
+            "org.mongodb",
+            "mongodb-driver-sync",
+            "5.5.1",
+            "mongodb_library",
+            null
+    ),
     COSMOS_CORE(
             "com.github.xnaut97",
             "cosmos-core",
             "1.0.0",
             "cosmos_core_library",
+            null
+    ),
+    COSMOS_DATABASE(
+            "com.github.xnaut97",
+            "cosmos-database",
+            "1.0.0",
+            "cosmos_database_library",
             null
     ),
     COSMOS_MENU(
@@ -70,7 +82,6 @@ public enum Libraries implements LibraryObject {
             "cosmos_utilities_library",
             null
     ),
-
     ;
 
     private final String groupId;

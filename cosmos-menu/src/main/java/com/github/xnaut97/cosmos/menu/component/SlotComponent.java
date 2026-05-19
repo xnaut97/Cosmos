@@ -1,6 +1,7 @@
 package com.github.xnaut97.cosmos.menu.component;
 
 import com.github.xnaut97.cosmos.menu.Menu;
+import lombok.Getter;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -14,6 +15,7 @@ import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 
+@Getter
 public class SlotComponent implements MenuComponent {
 
     private final int slot;
@@ -40,16 +42,8 @@ public class SlotComponent implements MenuComponent {
         this.itemSupplier = Objects.requireNonNull(itemSupplier, "itemSupplier");
     }
 
-    public int getSlot() {
-        return slot;
-    }
-
     public ItemStack getItem() {
         return itemSupplier.get();
-    }
-
-    public String getCustomSlotId() {
-        return customSlotId;
     }
 
     public Map<String, Object> getMetadata() {
