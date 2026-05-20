@@ -3,6 +3,7 @@ package com.github.xnaut97.cosmos.command;
 import com.github.xnaut97.cosmos.command.param.CommandParam;
 import com.github.xnaut97.cosmos.command.param.ParamPriority;
 import com.github.xnaut97.cosmos.command.param.StringParam;
+import com.github.xnaut97.cosmos.command.syntax.CommandSyntax;
 import com.github.xnaut97.cosmos.utilities.ClickableText;
 import com.google.common.collect.Lists;
 import net.md_5.bungee.api.chat.*;
@@ -53,7 +54,7 @@ public class HelpCommand extends CommandArgument {
 
     @Override
     public List<CommandParam> getParams() {
-        int size = Math.toIntExact(handle.getArguments().values().stream().distinct().count());
+        int size = Math.toIntExact(handle.getArguments().values().stream().distinct().count()) + handle.getSyntaxes().size();
         int perPage = handle.getHelpSuggestions();
 
         // Compute total pages using integer math trick: ceil(size / perPage)
@@ -111,7 +112,7 @@ public class HelpCommand extends CommandArgument {
                 .distinct()
                 .sorted(Comparator.comparing(CommandArgument::getName))
                 .forEachOrdered(command -> {
-                    boolean hasPermission = command.getPermission() != null || !command.getPermission().isEmpty();
+                    boolean hasPermission = command.getPermission() != null && !command.getPermission().isEmpty();
                     if (!hasPermission || sender.hasPermission(command.getPermission())) {
                         Optional<CommandArgument> existing = filter.stream()
                                 .filter(c -> c.getName().equalsIgnoreCase(command.getName()))
@@ -122,14 +123,22 @@ public class HelpCommand extends CommandArgument {
                         }
                     }
                 });
+        List<Object> entries = Lists.newArrayList();
+        entries.addAll(filter);
+        handle.getSyntaxes().stream()
+                .filter(syntax -> syntax.getPermission() == null ||
+                        syntax.getPermission().isEmpty() ||
+                        sender.hasPermission(syntax.getPermission()))
+                .sorted(Comparator.comparing(CommandSyntax::getUsage))
+                .forEachOrdered(entries::add);
         int perPage = handle.getHelpSuggestions();
-        int totalPages = (filter.size() + perPage - 1) / perPage;
+        int totalPages = (entries.size() + perPage - 1) / perPage;
 
         if (totalPages == 0) totalPages = 1;
         if (page < 0) page = 0;
         if (page >= totalPages) page = totalPages - 1;
 
-        int max = Math.min(perPage * (page + 1), filter.size());
+        int max = Math.min(perPage * (page + 1), entries.size());
 
         if (handle.getHelpHeader() != null)
             sender.sendMessage(handle.getHelpHeader().replace("&", "§"));
@@ -141,7 +150,20 @@ public class HelpCommand extends CommandArgument {
         sender.sendMessage("§7Hover to see command information.");
         sender.sendMessage(" ");
         for (int i = page * handle.getHelpSuggestions(); i < max; i++) {
-            CommandArgument command = filter.get(i);
+            Object entry = entries.get(i);
+            if (entry instanceof CommandSyntax) {
+                CommandSyntax syntax = (CommandSyntax) entry;
+                if (sender instanceof Player) {
+                    ((Player) sender).spigot().sendMessage(createClickableSyntax(syntax));
+                } else {
+                    sender.sendMessage((handle.getHelpCommandColor() + "/" + handle.getName() + " " + syntax.getUsage()
+                            + ": " + handle.getHelpDescriptionColor() + syntax.getDescription())
+                            .replace("&", "\u00A7"));
+                }
+                continue;
+            }
+
+            CommandArgument command = (CommandArgument) entry;
             if (sender instanceof Player) {
                 Player player = (Player) sender;
                 if (command.require(player) || player.isOp())
@@ -170,7 +192,7 @@ public class HelpCommand extends CommandArgument {
             TextComponent pageInfo = createClickableButton(" &e&l" + (page + 1) + " ",
                     null, "&7You're in page " + (page + 1));
             ClickableText spacing = new ClickableText("                       ");
-            boolean canNextPage = handle.getHelpSuggestions() * (page + 1) < filter.size();
+            boolean canNextPage = handle.getHelpSuggestions() * (page + 1) < entries.size();
             if (page < 1) {
                 if (canNextPage)
                     player.spigot().sendMessage(spacing.build(), pageInfo, nextPage);
@@ -214,6 +236,51 @@ public class HelpCommand extends CommandArgument {
         clickableText.setHoverAction(HoverEvent.Action.SHOW_TEXT, hover.toArray(new String[0]));
         clickableText.setClickAction(ClickEvent.Action.SUGGEST_COMMAND, "/" + handle.getName() + " " + argument.getName());
         return clickableText.build();
+    }
+
+    private BaseComponent createClickableSyntax(CommandSyntax syntax) {
+        List<String> hover = Lists.newArrayList();
+        if (!syntax.getDescription().isEmpty()) {
+            hover.add((handle.getHelpDescriptionColor() + syntax.getDescription()).replace("&", "\u00A7"));
+            hover.add("\n \n");
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(handle.getHelpCommandColor().replace("&", "\u00A7"))
+                .append("/").append(handle.getName());
+
+        String usage = syntax.getUsage();
+        if (!usage.isEmpty()) {
+            builder.append(" ").append(handle.getHelpParamColor().replace("&", "\u00A7"))
+                    .append(usage);
+        }
+
+        if (!syntax.getParams().isEmpty()) {
+            hover.addAll(syntax.getParams().stream().map(this::buildHoverParam).collect(Collectors.toList()));
+            hover.add(" \n");
+        }
+
+        hover.add("\u00A7eClick to get this command");
+
+        ClickableText clickableText = new ClickableText(builder.toString());
+        clickableText.setHoverAction(HoverEvent.Action.SHOW_TEXT, hover.toArray(new String[0]));
+        clickableText.setClickAction(ClickEvent.Action.SUGGEST_COMMAND, "/" + handle.getName() + " " + buildSyntaxSuggestion(syntax));
+        return clickableText.build();
+    }
+
+    private String buildSyntaxSuggestion(CommandSyntax syntax) {
+        String usage = syntax.getUsage();
+        int paramIndex = usage.indexOf('[');
+        int optionalIndex = usage.indexOf('{');
+        int index = -1;
+        if (paramIndex >= 0 && optionalIndex >= 0) {
+            index = Math.min(paramIndex, optionalIndex);
+        } else if (paramIndex >= 0) {
+            index = paramIndex;
+        } else if (optionalIndex >= 0) {
+            index = optionalIndex;
+        }
+        return index < 0 ? usage : usage.substring(0, index).trim();
     }
 
     @NotNull

@@ -37,6 +37,10 @@ public abstract class CommandParam {
 
     protected abstract List<String> test(String value);
 
+    public List<String> validate(String value) {
+        return test(value);
+    }
+
     public List<String> apply(String value) {
         if (value == null || value.isEmpty()) {
             return placeholders.stream()

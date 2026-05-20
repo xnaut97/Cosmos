@@ -3,6 +3,8 @@ package com.github.xnaut97.cosmos.command;
 import com.github.xnaut97.cosmos.command.param.ArrayParam;
 import com.github.xnaut97.cosmos.command.param.CommandParam;
 import com.github.xnaut97.cosmos.command.param.ParamType;
+import com.github.xnaut97.cosmos.command.syntax.CommandSyntax;
+import com.github.xnaut97.cosmos.command.syntax.SyntaxMatch;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -31,9 +33,11 @@ final class CommandCompleter {
         List<CommandArgument> arguments = getArguments(sender, args[0]);
         // ---- FIRST ARGUMENT (COMMAND ARGUMENT NAME) ----
         if (args.length == 1) {
-            return arguments.stream()
+            Set<String> suggestions = new LinkedHashSet<>(arguments.stream()
                     .map(CommandArgument::getName)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()));
+            suggestions.addAll(getSyntaxSuggestions(sender, args));
+            return new ArrayList<>(suggestions);
         }
 
         CommandArgument argument = arguments.stream()
@@ -41,8 +45,13 @@ final class CommandCompleter {
                 .findFirst()
                 .orElse(null);
 
-        if (argument == null || argument.getParams().isEmpty()) {
-            return Collections.emptyList();
+        if (argument == null) {
+            return getSyntaxSuggestions(sender, args);
+        }
+
+        if (argument.getParams().isEmpty()) {
+            List<String> syntaxSuggestions = getSyntaxSuggestions(sender, args);
+            return syntaxSuggestions.isEmpty() ? Collections.emptyList() : syntaxSuggestions;
         }
 
         // Extract only parameters after argument name
@@ -75,6 +84,27 @@ final class CommandCompleter {
         CommandParam activeParam = argument.getParams().get(paramIndex);
 
         return activeParam.apply(lastInput);
+    }
+
+    private List<String> getSyntaxSuggestions(CommandSender sender, String[] args) {
+        Set<String> suggestions = new LinkedHashSet<>();
+        for (CommandSyntax syntax : handle.getSyntaxes()) {
+            if (syntax.getPermission() != null && !syntax.getPermission().isEmpty() && !sender.hasPermission(syntax.getPermission())) {
+                continue;
+            }
+            SyntaxMatch match = handle.getSyntaxParser().partial(sender, syntax, args);
+            if (match == null) {
+                continue;
+            }
+            if (match.getActiveParam() == null) {
+                if (match.getActiveInput() != null) {
+                    suggestions.add(match.getActiveInput());
+                }
+                continue;
+            }
+            suggestions.addAll(match.getActiveParam().apply(match.getActiveInput()));
+        }
+        return new ArrayList<>(suggestions);
     }
 
     private List<CommandArgument> getArguments(CommandSender sender, String start) {

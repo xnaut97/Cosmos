@@ -1,5 +1,8 @@
 package com.github.xnaut97.cosmos.command;
 
+import com.github.xnaut97.cosmos.command.syntax.CommandSyntax;
+import com.github.xnaut97.cosmos.command.syntax.SyntaxMatch;
+import com.github.xnaut97.cosmos.command.syntax.SyntaxParser;
 import com.google.common.collect.Maps;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,6 +34,10 @@ public abstract class AbstractCommand<T extends Plugin> extends BukkitCommand {
     private final UUID uniqueId = UUID.randomUUID();
 
     private final Map<String, CommandArgument> arguments = Maps.newHashMap();
+
+    private final List<CommandSyntax> syntaxes = new ArrayList<>();
+
+    private final SyntaxParser syntaxParser = new SyntaxParser();
 
     private String noPermissionsMessage = "&cYou don't have permission to access.";
 
@@ -88,6 +95,28 @@ public abstract class AbstractCommand<T extends Plugin> extends BukkitCommand {
                     .filter(entry -> entry.getKey().equalsIgnoreCase(name))
                     .map(Map.Entry::getValue).findAny().orElse(null);
             if (command == null) {
+                SyntaxMatch match = findSyntax(sender, args);
+                if (match != null) {
+                    CommandSyntax syntax = match.getSyntax();
+                    String permission = syntax.getPermission();
+                    if (permission != null && !permission.isEmpty()) {
+                        boolean hasPermission = !(sender instanceof Player) || sender.hasPermission(permission);
+                        if (!hasPermission) {
+                            sender.sendMessage(this.noPermissionsMessage.replace("&", "\u00A7"));
+                            return true;
+                        }
+                    }
+                    if (sender instanceof Player && syntax.getRequirement() != null) {
+                        Player player = (Player) sender;
+                        if (!syntax.getRequirement().test(player) && !player.isOp()) {
+                            return true;
+                        }
+                    }
+                    if (syntax.getExecutor() != null) {
+                        syntax.getExecutor().execute(sender, match.getContext());
+                        return true;
+                    }
+                }
                 sender.sendMessage(this.noSubCommandFoundMessage.replace("&", "§"));
                 return true;
             }
@@ -134,6 +163,17 @@ public abstract class AbstractCommand<T extends Plugin> extends BukkitCommand {
         return this;
     }
 
+    public AbstractCommand<T> addSyntaxes(CommandSyntax... syntaxes) {
+        for (CommandSyntax syntax : syntaxes) {
+            if (syntax == null) {
+                continue;
+            }
+            this.syntaxes.add(syntax);
+            registerPermission(syntax);
+        }
+        return this;
+    }
+
     private void registerPermission(CommandArgument command) {
         String permName = command.getPermission();
         if (permName == null || permName.isEmpty()) return;
@@ -151,6 +191,34 @@ public abstract class AbstractCommand<T extends Plugin> extends BukkitCommand {
             pm.addPermission(permission);
             registeredPermissions.add(permName);
         }
+    }
+
+    private void registerPermission(CommandSyntax syntax) {
+        String permName = syntax.getPermission();
+        if (permName == null || permName.isEmpty()) return;
+
+        PluginManager pm = Bukkit.getPluginManager();
+
+        Permission permission = pm.getPermission(permName);
+        if (permission == null) {
+            permission = new Permission(
+                    permName,
+                    syntax.getPermissionDescription(),
+                    syntax.getPermissionDefault()
+            );
+            pm.addPermission(permission);
+            registeredPermissions.add(permName);
+        }
+    }
+
+    private SyntaxMatch findSyntax(CommandSender sender, String[] args) {
+        for (CommandSyntax syntax : syntaxes) {
+            SyntaxMatch match = syntaxParser.match(sender, syntax, args);
+            if (match != null && match.isMatched()) {
+                return match;
+            }
+        }
+        return null;
     }
 
     private void registerMainPermission() {
@@ -233,6 +301,14 @@ public abstract class AbstractCommand<T extends Plugin> extends BukkitCommand {
      */
     public Map<String, CommandArgument> getArguments() {
         return Collections.unmodifiableMap(this.arguments);
+    }
+
+    public List<CommandSyntax> getSyntaxes() {
+        return Collections.unmodifiableList(this.syntaxes);
+    }
+
+    SyntaxParser getSyntaxParser() {
+        return syntaxParser;
     }
 
 }
