@@ -1,21 +1,17 @@
 package com.github.xnaut97.cosmos.menu.type;
 
-import com.cryptomorin.xseries.XMaterial;
 import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.trade.TradingParticipant;
 import com.github.xnaut97.cosmos.menu.trade.TradingSession;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.menu.trade.component.DividerComponent;
+import com.github.xnaut97.cosmos.menu.trade.component.PlayerHeadComponent;
+import com.github.xnaut97.cosmos.menu.trade.component.TradeControlComponent;
+import com.github.xnaut97.cosmos.menu.trade.component.TradeGridComponent;
+import com.github.xnaut97.cosmos.menu.trade.component.TradePageComponent;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
-
-import java.util.List;
 
 @Getter
 public class TradingMenu extends Menu {
@@ -34,17 +30,23 @@ public class TradingMenu extends Menu {
     };
     public static final int TRADE_SLOTS_PER_PAGE = SELF_TRADE_SLOTS.length;
 
+    private static final int SELF_HEAD_SLOT = 0;
+    private static final int TARGET_HEAD_SLOT = 8;
     private static final int CANCEL_SLOT = 45;
     private static final int ACTION_SLOT = 48;
-    private static final int SELF_PREVIOUS_SLOT = 1;
-    private static final int SELF_INFO_SLOT = 2;
-    private static final int SELF_NEXT_SLOT = 3;
-    private static final int TARGET_INFO_SLOT = 6;
+    private static final int SELF_PREVIOUS_SLOT = 46;
+    private static final int SELF_NEXT_SLOT = 47;
+    private static final int TARGET_PREVIOUS_SLOT = 51;
+    private static final int TARGET_NEXT_SLOT = 52;
+    private static final int TARGET_ACCEPTED_SLOT = 53;
     private static final int[] DIVIDER_SLOTS = {4, 13, 22, 31, 40, 49};
 
     private final TradingSession session;
     private final TradingParticipant self;
     private final TradingParticipant target;
+    private TradeGridComponent selfGrid;
+    private TradeGridComponent targetGrid;
+    private int targetPage;
     private boolean initialized;
 
     public TradingMenu(Plugin plugin, TradingSession session, TradingParticipant self, TradingParticipant target, String title) {
@@ -61,192 +63,52 @@ public class TradingMenu extends Menu {
         }
 
         initialized = true;
-        for (int slot : SELF_TRADE_SLOTS) {
-            allowItemInput(slot);
-        }
-        canPlace((slot, item) -> isSelfTradeSlot(slot) && !self.isConfirmed());
-        canTake(slot -> isSelfTradeSlot(slot) && !self.isConfirmed());
-        canDragInto(slot -> isSelfTradeSlot(slot) && !self.isConfirmed());
-        syncFromSession();
+        selfGrid = new TradeGridComponent(session, self, SELF_TRADE_SLOTS, self::getPage, true);
+        targetGrid = new TradeGridComponent(session, target, TARGET_TRADE_SLOTS, this::getTargetPage, false);
+
+        addComponent(new PlayerHeadComponent(SELF_HEAD_SLOT, self.getPlayer(), "&a" + self.getPlayer().getName()));
+        addComponent(new PlayerHeadComponent(TARGET_HEAD_SLOT, target.getPlayer(), "&c" + target.getPlayer().getName()));
+        addComponent(new DividerComponent(DIVIDER_SLOTS));
+        addComponent(selfGrid);
+        addComponent(targetGrid);
+        addComponent(new TradeControlComponent(session, self, target, CANCEL_SLOT, ACTION_SLOT, TARGET_ACCEPTED_SLOT));
+        addComponent(new TradePageComponent(session, self, SELF_PREVIOUS_SLOT, self::getPage,
+                page -> session.setPage(self, page, true), false, true));
+        addComponent(new TradePageComponent(session, self, SELF_NEXT_SLOT, self::getPage,
+                page -> session.setPage(self, page, true), true, true));
+        addComponent(new TradePageComponent(session, target, TARGET_PREVIOUS_SLOT, this::getTargetPage,
+                this::setTargetPage, false, false));
+        addComponent(new TradePageComponent(session, target, TARGET_NEXT_SLOT, this::getTargetPage,
+                this::setTargetPage, true, false));
     }
 
     public void syncFromSession() {
-        renderStaticSlots();
-        renderTradeSlots();
-        renderControls();
+        targetPage = Math.min(targetPage, session.getMaxPage(target, false));
+        renderComponents();
     }
 
     public void renderTradeSlots() {
-        renderItemPage(self, SELF_TRADE_SLOTS, self.getPage());
-        renderItemPage(target, TARGET_TRADE_SLOTS, target.getPage());
+        if (selfGrid != null) {
+            selfGrid.render(this);
+        }
+        if (targetGrid != null) {
+            targetGrid.render(this);
+        }
+    }
+
+    public void setTargetPage(int page) {
+        targetPage = Math.min(Math.max(0, page), session.getMaxPage(target, false));
+        renderComponents();
     }
 
     @Override
-    public void onClick(InventoryClickEvent event) {
-        int rawSlot = event.getRawSlot();
-        if (rawSlot == CANCEL_SLOT) {
-            event.setCancelled(true);
-            session.cancel();
-            return;
-        }
-        if (rawSlot == ACTION_SLOT) {
-            event.setCancelled(true);
-            if (self.isConfirmed()) {
-                session.accept(self);
-            } else {
-                session.confirm(self);
-            }
-            return;
-        }
-        if (rawSlot == SELF_PREVIOUS_SLOT) {
-            event.setCancelled(true);
-            session.setPage(self, self.getPage() - 1);
-            return;
-        }
-        if (rawSlot == SELF_NEXT_SLOT) {
-            event.setCancelled(true);
-            session.setPage(self, self.getPage() + 1);
-            return;
-        }
-        if (isTargetTradeSlot(rawSlot) || isDivider(rawSlot) || isStaticControl(rawSlot)) {
-            event.setCancelled(true);
-            return;
-        }
-
-        super.onClick(event);
-    }
-
-    @Override
-    protected void afterAllowedClick(InventoryClickEvent event, int rawSlot) {
-        scheduleSessionSync();
-    }
-
-    @Override
-    protected void afterShiftClickPlaced(java.util.Collection<Integer> changedSlots) {
-        scheduleSessionSync();
-    }
-
-    @Override
-    protected void afterAllowedDrag(InventoryDragEvent event) {
-        scheduleSessionSync();
+    protected boolean handleExternalShiftClickIntoMenu(InventoryClickEvent event) {
+        return selfGrid != null && selfGrid.handleExternalShiftClick(this, event);
     }
 
     @Override
     public void onClose(InventoryCloseEvent event) {
         super.onClose(event);
         session.handleClose(this);
-    }
-
-    private void scheduleSessionSync() {
-        Bukkit.getScheduler().runTask(getPlugin(), () -> session.syncItemsFromMenu(this));
-    }
-
-    private void renderItemPage(TradingParticipant participant, int[] slots, int page) {
-        List<ItemStack> items = participant.getItems();
-        int startIndex = page * TRADE_SLOTS_PER_PAGE;
-        for (int i = 0; i < slots.length; i++) {
-            int itemIndex = startIndex + i;
-            ItemStack item = itemIndex < items.size()
-                    ? items.get(itemIndex).clone()
-                    : null;
-
-            renderSlot(slots[i], item);
-        }
-    }
-
-    private void renderStaticSlots() {
-        renderSlot(0, playerHead(self.getPlayer(), "&a" + self.getPlayer().getName()));
-        renderSlot(8, playerHead(target.getPlayer(), "&c" + target.getPlayer().getName()));
-        ItemStack divider = new ItemCreator(Material.GRAY_STAINED_GLASS_PANE)
-                .setDisplayName("&8")
-                .setAmount(1)
-                .build();
-        for (int slot : DIVIDER_SLOTS) {
-            renderSlot(slot, divider);
-        }
-    }
-
-    private void renderControls() {
-        renderSlot(CANCEL_SLOT, new ItemCreator(Material.BARRIER)
-                .setDisplayName("&cCancel")
-                .setLore("&7Cancel this trade and return all items.")
-                .build());
-        renderSlot(ACTION_SLOT, actionItem());
-        renderSlot(SELF_PREVIOUS_SLOT, self.getPage() > 0 ? pageItem("&ePrevious Page") : null);
-        renderSlot(SELF_INFO_SLOT, pageInfo(self, true));
-        renderSlot(SELF_NEXT_SLOT, self.getPage() < session.getMaxPage(self, true) ? pageItem("&eNext Page") : null);
-        renderSlot(TARGET_INFO_SLOT, pageInfo(target, false));
-    }
-
-    private ItemStack actionItem() {
-        if (self.isAccepted()) {
-            return new ItemCreator(Material.EMERALD_BLOCK)
-                    .setDisplayName("&aAccepted")
-                    .setLore("&7Waiting for " + target.getPlayer().getName() + ".")
-                    .setGlow(true)
-                    .build();
-        }
-        if (self.isConfirmed()) {
-            return new ItemCreator(Material.EMERALD)
-                    .setDisplayName("&aAccept")
-                    .setLore("&7Accept the current trade.")
-                    .build();
-        }
-        return new ItemCreator(Material.LIME_DYE)
-                .setDisplayName("&eConfirm")
-                .setLore("&7Lock your offered items.")
-                .setAmount(10)
-                .build();
-    }
-
-    private ItemStack pageItem(String name) {
-        return new ItemCreator(Material.ARROW)
-                .setDisplayName(name)
-                .build();
-    }
-
-    private ItemStack pageInfo(TradingParticipant participant, boolean editableSide) {
-        int maxPage = session.getMaxPage(participant, editableSide);
-        return new ItemCreator(Material.PAPER)
-                .setDisplayName("&ePage " + (participant.getPage() + 1) + "/" + (maxPage + 1))
-                .build();
-    }
-
-    private ItemStack playerHead(Player player, String name) {
-        ItemStack head = XMaterial.PLAYER_HEAD.parseItem();
-        if (head == null) {
-            head = new ItemStack(Material.PLAYER_HEAD);
-        }
-        return new ItemCreator(head)
-                .setTexture(player)
-                .setDisplayName(name)
-                .build();
-    }
-
-    private boolean isSelfTradeSlot(int slot) {
-        return contains(SELF_TRADE_SLOTS, slot);
-    }
-
-    private boolean isTargetTradeSlot(int slot) {
-        return contains(TARGET_TRADE_SLOTS, slot);
-    }
-
-    private boolean isDivider(int slot) {
-        return contains(DIVIDER_SLOTS, slot);
-    }
-
-    private boolean isStaticControl(int slot) {
-        return slot == 0 || slot == 8 || slot == SELF_INFO_SLOT || slot == TARGET_INFO_SLOT
-                || slot == 5 || slot == 7 || slot == 46 || slot == 47 || slot == 50
-                || slot == 51 || slot == 52 || slot == 53;
-    }
-
-    private boolean contains(int[] slots, int slot) {
-        for (int value : slots) {
-            if (value == slot) {
-                return true;
-            }
-        }
-        return false;
     }
 }

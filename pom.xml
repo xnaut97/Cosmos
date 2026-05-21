@@ -27,6 +27,7 @@
         <module>cosmos-menu</module>
         <module>cosmos-input</module>
         <module>cosmos-command</module>
+        <module>cosmos-main</module>
     </modules>
 
     <properties>
@@ -38,6 +39,7 @@
         <annotations.version>26.1.0</annotations.version>
         <authlib.version>6.0.58</authlib.version>
         <bstats-bukkit.version>3.2.1</bstats-bukkit.version>
+        <gson.version>2.11.0</gson.version>
         <lombok.version>1.18.44</lombok.version>
         <spigot-api.version>1.18.2-R0.1-SNAPSHOT</spigot-api.version>
         <xseries.version>13.6.0</xseries.version>
@@ -46,6 +48,7 @@
         <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.5.0</maven-javadoc-plugin.version>
+        <maven-shade-plugin.version>3.5.3</maven-shade-plugin.version>
         <maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
         <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
     </properties>
@@ -82,6 +85,11 @@
                 <artifactId>cosmos-command</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cosmos-main</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.spigotmc</groupId>
@@ -98,12 +106,18 @@
                 <groupId>com.github.cryptomorin</groupId>
                 <artifactId>XSeries</artifactId>
                 <version>${xseries.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.mojang</groupId>
                 <artifactId>authlib</artifactId>
                 <version>${authlib.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jetbrains</groupId>
@@ -167,6 +181,11 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

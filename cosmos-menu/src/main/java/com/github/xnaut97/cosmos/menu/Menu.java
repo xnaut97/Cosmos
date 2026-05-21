@@ -9,8 +9,7 @@ import com.github.xnaut97.cosmos.menu.component.SlotComponent;
 import com.github.xnaut97.cosmos.menu.component.StaticItemComponent;
 import com.github.xnaut97.cosmos.menu.state.MenuState;
 import com.github.xnaut97.cosmos.menu.state.TransactionState;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
+import com.github.xnaut97.cosmos.utilities.ItemCreator;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -24,12 +23,9 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
 
-import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
@@ -565,30 +561,13 @@ public abstract class Menu implements InventoryHolder {
 
     protected ItemStack createSkull(String url, String displayName) {
         ItemStack skull = XMaterial.PLAYER_HEAD.parseItem();
-        SkullMeta meta = null;
-        if (skull != null) {
-            meta = (SkullMeta) skull.getItemMeta();
-        }
-        if (meta == null) {
+        if (skull == null) {
             return null;
         }
-
-        GameProfile profile = new GameProfile(UUID.randomUUID(), "FakeProfile");
-        String payload = "{\"textures\":{\"SKIN\":{\"url\":\"" + url + "\"}}}";
-        String encoded = Base64.getEncoder().encodeToString(payload.getBytes(StandardCharsets.UTF_8));
-        profile.getProperties().put("textures", new Property("textures", encoded));
-
-        try {
-            Field profileField = meta.getClass().getDeclaredField("profile");
-            profileField.setAccessible(true);
-            profileField.set(meta, profile);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        meta.setDisplayName(color(displayName));
-        skull.setItemMeta(meta);
-        return skull;
+        return new ItemCreator(skull)
+                .setTexture(url)
+                .setDisplayName(displayName)
+                .build();
     }
 
     protected ItemStack createButton(Material material, String name, List<String> lore, boolean glow) {
@@ -782,6 +761,10 @@ public abstract class Menu implements InventoryHolder {
             return false;
         }
 
+        if (handleExternalShiftClickIntoMenu(event)) {
+            return true;
+        }
+
         Inventory clickedInventory = event.getClickedInventory();
         if (clickedInventory == null) {
             event.setCancelled(true);
@@ -797,6 +780,10 @@ public abstract class Menu implements InventoryHolder {
         int sourceSlot = event.getSlot();
         Bukkit.getScheduler().runTask(plugin, () -> placeIntoAllowedSlots(clickedInventory, sourceSlot));
         return true;
+    }
+
+    protected boolean handleExternalShiftClickIntoMenu(InventoryClickEvent event) {
+        return false;
     }
 
     private void placeIntoAllowedSlots(Inventory sourceInventory, int sourceSlot) {

@@ -4,13 +4,13 @@ import com.github.xnaut97.cosmos.menu.type.TradingMenu;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +26,13 @@ public class TradingSession {
     private boolean closing;
     private boolean finalized;
     private boolean cleaned;
+    private Sound placeSound = Sound.ENTITY_ITEM_PICKUP;
+    private Sound takeSound = Sound.ENTITY_ITEM_PICKUP;
+    private Sound opponentAcceptedSound = Sound.BLOCK_NOTE_BLOCK_PLING;
+    private Sound successSound = Sound.ENTITY_PLAYER_LEVELUP;
+    private Sound cancelledSound = Sound.BLOCK_ANVIL_LAND;
+    private float soundVolume = 0.8F;
+    private float soundPitch = 1.0F;
 
     public TradingSession(Plugin plugin, Player first, Player second, String title) {
         if (first == null || second == null) {
@@ -84,12 +91,12 @@ public class TradingSession {
         return lastItemPage;
     }
 
-    public void setPage(TradingParticipant participant, int page) {
+    public void setPage(TradingParticipant participant, int page, boolean editableSide) {
         if (isEnded()) {
             return;
         }
 
-        participant.page(Math.min(Math.max(0, page), getMaxPage(participant, true)));
+        participant.page(Math.min(Math.max(0, page), getMaxPage(participant, editableSide)));
         syncMenus();
     }
 
@@ -99,7 +106,7 @@ public class TradingSession {
         }
 
         TradingParticipant owner = menu.getSelf();
-        if (owner.isConfirmed()) {
+        if (owner.isAccepted()) {
             menu.renderTradeSlots();
             return;
         }
@@ -112,24 +119,95 @@ public class TradingSession {
         syncMenus();
     }
 
-    public void confirm(TradingParticipant participant) {
-        if (isEnded()) {
-            return;
-        }
-        participant.confirmed(true);
-        participant.accepted(false);
-        syncMenus();
-    }
-
     public void accept(TradingParticipant participant) {
         if (isEnded()) {
             return;
         }
+        if (participant.isAccepted()) {
+            return;
+        }
+
+        syncItemsFromOpenMenus();
         participant.accepted(true);
         syncMenus();
+
         if (first.isAccepted() && second.isAccepted()) {
             complete();
+        } else {
+            TradingParticipant other = getOther(participant);
+            playSound(other.getPlayer(), opponentAcceptedSound);
         }
+    }
+
+    public void unaccept(TradingParticipant participant) {
+        if (isEnded()) {
+            return;
+        }
+        participant.accepted(false);
+        syncMenus();
+    }
+
+    public boolean placeFromInventory(TradingMenu menu, Inventory sourceInventory, int sourceSlot) {
+        if (isEnded() || menu == null || sourceInventory == null) {
+            return false;
+        }
+
+        TradingParticipant owner = menu.getSelf();
+        if (owner.isAccepted()) {
+            owner.getPlayer().updateInventory();
+            return false;
+        }
+
+        ItemStack sourceItem = normalize(sourceInventory.getItem(sourceSlot));
+        if (sourceItem == null) {
+            return false;
+        }
+
+        syncItemsFromMenu(menu);
+        ItemStack moving = sourceItem.clone();
+        int remaining = moving.getAmount();
+        List<ItemStack> items = owner.getItems();
+        int placedPage = -1;
+
+        for (int index = 0; index < items.size() && remaining > 0; index++) {
+            ItemStack existing = normalize(items.get(index));
+            if (existing == null || !existing.isSimilar(moving)) {
+                continue;
+            }
+
+            int maxStack = Math.min(existing.getMaxStackSize(), owner.getPlayer().getInventory().getMaxStackSize());
+            int available = maxStack - existing.getAmount();
+            if (available <= 0) {
+                continue;
+            }
+
+            int amount = Math.min(remaining, available);
+            ItemStack updated = existing.clone();
+            updated.setAmount(existing.getAmount() + amount);
+            items.set(index, updated);
+            remaining -= amount;
+            placedPage = index / TradingMenu.TRADE_SLOTS_PER_PAGE;
+        }
+
+        while (remaining > 0) {
+            ItemStack placed = moving.clone();
+            int amount = Math.min(remaining, placed.getMaxStackSize());
+            placed.setAmount(amount);
+            items.add(placed);
+            remaining -= amount;
+            placedPage = (items.size() - 1) / TradingMenu.TRADE_SLOTS_PER_PAGE;
+        }
+
+        if (placedPage >= 0) {
+            owner.page(placedPage);
+            getOther(owner).resetDecision();
+            sourceInventory.clear(sourceSlot);
+            owner.getPlayer().updateInventory();
+            playSound(owner.getPlayer(), placeSound);
+            syncMenus();
+            return true;
+        }
+        return false;
     }
 
     public void cancel() {
@@ -143,6 +221,8 @@ public class TradingSession {
         returnItems(second.getPlayer(), second.getItems());
         clearSessionItems();
         closeMenus();
+        playSound(first.getPlayer(), cancelledSound);
+        playSound(second.getPlayer(), cancelledSound);
         cleanup();
     }
 
@@ -151,6 +231,7 @@ public class TradingSession {
             captureVisibleItems(menu);
             cancel();
         }
+
     }
 
     private void complete() {
@@ -173,6 +254,8 @@ public class TradingSession {
         addItems(second.getPlayer(), first.getItems());
         clearSessionItems();
         closeMenus();
+        playSound(first.getPlayer(), successSound);
+        playSound(second.getPlayer(), successSound);
         cleanup();
     }
 
@@ -216,7 +299,7 @@ public class TradingSession {
 
     private void captureVisibleItems(TradingMenu menu) {
         TradingParticipant owner = menu.getSelf();
-        if (!owner.isConfirmed()) {
+        if (!owner.isAccepted()) {
             applyVisibleItems(owner, menu);
         }
     }
@@ -363,9 +446,76 @@ public class TradingSession {
         return true;
     }
 
+    public void playPlaceSound(Player player) {
+        playSound(player, placeSound);
+    }
+
+    public void playTakeSound(Player player) {
+        playSound(player, takeSound);
+    }
+
+    public TradingSession placeSound(Sound sound) {
+        this.placeSound = sound;
+        return this;
+    }
+
+    public TradingSession takeSound(Sound sound) {
+        this.takeSound = sound;
+        return this;
+    }
+
+    public TradingSession opponentAcceptedSound(Sound sound) {
+        this.opponentAcceptedSound = sound;
+        return this;
+    }
+
+    public TradingSession successSound(Sound sound) {
+        this.successSound = sound;
+        return this;
+    }
+
+    public TradingSession cancelledSound(Sound sound) {
+        this.cancelledSound = sound;
+        return this;
+    }
+
+    public TradingSession soundVolume(float soundVolume) {
+        this.soundVolume = soundVolume;
+        return this;
+    }
+
+    public TradingSession soundPitch(float soundPitch) {
+        this.soundPitch = soundPitch;
+        return this;
+    }
+
+    private void playSound(Player player, Sound sound) {
+        if (player != null && sound != null) {
+            player.playSound(player.getLocation(), sound, soundVolume, soundPitch);
+        }
+    }
+
     private void ensureMainThread() {
         if (!Bukkit.isPrimaryThread()) {
             throw new IllegalStateException("Trading sessions must be opened on the Bukkit main thread");
         }
+    }
+
+    public void shutdown() {
+        if (isEnded()) {
+            return;
+        }
+
+        finalized = true;
+        closing = true;
+
+        syncItemsFromOpenMenus();
+
+        returnItems(first.getPlayer(), first.getItems());
+        returnItems(second.getPlayer(), second.getItems());
+
+        clearSessionItems();
+
+        cleanup();
     }
 }

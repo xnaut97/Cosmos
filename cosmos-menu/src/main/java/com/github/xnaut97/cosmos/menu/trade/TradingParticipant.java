@@ -15,7 +15,6 @@ public class TradingParticipant {
     private final Player player;
     private final List<ItemStack> items = new ArrayList<>();
     private int page;
-    private boolean confirmed;
     private boolean accepted;
 
     TradingParticipant(Player player) {
@@ -27,22 +26,11 @@ public class TradingParticipant {
         this.page = Math.max(0, page);
     }
 
-    void confirmed(boolean confirmed) {
-        this.confirmed = confirmed;
-        if (!confirmed) {
-            this.accepted = false;
-        }
-    }
-
     void accepted(boolean accepted) {
         this.accepted = accepted;
-        if (accepted) {
-            this.confirmed = true;
-        }
     }
 
     void resetDecision() {
-        this.confirmed = false;
         this.accepted = false;
     }
 }

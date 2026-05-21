@@ -4,10 +4,7 @@ import com.cryptomorin.xseries.XEnchantment;
 import com.cryptomorin.xseries.reflection.XReflection;
 import com.cryptomorin.xseries.reflection.aggregate.VersionHandle;
 import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -17,15 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.util.Base64;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ItemCreator implements Cloneable {
@@ -37,6 +26,8 @@ public class ItemCreator implements Cloneable {
     private List<String> lore;
 
     private String texture;
+
+    private GameProfile gameProfile;
 
     public ItemCreator(ItemStack item) {
         this.item = item;
@@ -59,48 +50,27 @@ public class ItemCreator implements Cloneable {
     public ItemCreator setTexture(String texture) {
         if (!(this.meta instanceof SkullMeta))
             return this;
-        if(texture == null || texture.isEmpty())
+        if (texture == null || texture.isEmpty())
             return this;
         this.texture = texture;
         return this;
     }
 
     public ItemCreator setTexture(OfflinePlayer player) {
-        String[] value = getSkin(player.getName());
-        if (value == null)
+        if (!(this.meta instanceof SkullMeta) || player == null)
             return this;
-        GameProfile profile = new GameProfile(player.getUniqueId(), player.getName());
-        profile.getProperties().put("textures", new Property("textures", value[0], value[1]));
-        applyGameProfile(profile);
+        GameProfile cachedProfile = SkullProfileService.getCachedProfile(player);
+        if (cachedProfile != null) {
+            this.gameProfile = cachedProfile;
+        }
         return this;
     }
 
-    private String[] getSkin(String name) {
-        try {
-            URL url_0 = new URL("https://api.mojang.com/users/profiles/minecraft/" + name);
-            InputStream stream = null;
-            try {
-                stream = url_0.openStream();
-            }catch (Exception ignored) {
-
-            }
-            if(stream == null)
-                return null;
-            InputStreamReader reader_0 = new InputStreamReader(stream);
-            String uuid = new JsonParser().parse(reader_0).getAsJsonObject().get("id").getAsString();
-
-            URL url_1 = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid + "?unsigned=false");
-            InputStreamReader reader_1 = new InputStreamReader(url_1.openStream());
-            JsonObject textureProperty = new JsonParser().parse(reader_1).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
-            String texture = textureProperty.get("value").getAsString();
-            String signature = textureProperty.get("signature").getAsString();
-
-            return new String[]{texture, signature};
-        } catch (IOException e) {
-            System.err.println("Could not get skin data from session servers!");
-            e.printStackTrace();
-            return null;
-        }
+    public ItemCreator setTexture(GameProfile profile) {
+        if (!(this.meta instanceof SkullMeta) || profile == null)
+            return this;
+        this.gameProfile = profile;
+        return this;
     }
 
     public ItemCreator setDisplayName(String displayName) {
@@ -211,7 +181,9 @@ public class ItemCreator implements Cloneable {
     private ItemStack buildItem() {
         if (this.item.getType() != Material.AIR) {
             if (this.texture != null)
-                applyGameProfile(createProfile());
+                applyGameProfile(SkullProfileService.getOrCreateTextureProfile(this.texture));
+            if (this.gameProfile != null)
+                applyGameProfile(this.gameProfile);
             this.meta.setLore(this.lore);
             this.item.setItemMeta(meta);
         }
@@ -219,37 +191,7 @@ public class ItemCreator implements Cloneable {
     }
 
     private void applyGameProfile(GameProfile gameProfile) {
-        try {
-            Method setProfile = meta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
-            setProfile.setAccessible(true);
-            setProfile.invoke(meta, gameProfile);
-        } catch (Exception e) {
-            try {
-                Field profile = meta.getClass().getDeclaredField("profile");
-                profile.setAccessible(true);
-                profile.set(meta, gameProfile);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private GameProfile createProfile() {
-        String b64 = urlToBase64(this.texture);
-        // random uuid based on the b64 string
-        UUID id = new UUID(
-                b64.substring(b64.length() - 20).hashCode(),
-                b64.substring(b64.length() - 10).hashCode()
-        );
-        GameProfile profile = new GameProfile(id, "Player");
-        profile.getProperties().put("textures", new Property("textures", b64));
-        return profile;
-    }
-
-    private String urlToBase64(String url) {
-        url = "http://textures.minecraft.net/texture/" + url;
-        String toEncode = "{\"textures\":{\"SKIN\":{\"url\":\"" + url + "\"}}}";
-        return Base64.getEncoder().encodeToString(toEncode.getBytes());
+        SkullProfileService.applyGameProfile((SkullMeta) meta, gameProfile);
     }
 
     private String getVersion() {

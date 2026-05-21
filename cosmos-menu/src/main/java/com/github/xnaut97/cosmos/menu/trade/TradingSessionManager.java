@@ -1,5 +1,6 @@
 package com.github.xnaut97.cosmos.menu.trade;
 
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,9 +8,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class TradingSessionManager {
 
@@ -28,6 +28,11 @@ public final class TradingSessionManager {
                 }
             }
         }, plugin);
+    }
+
+    public static List<TradingSession> getSessions() {
+        return SESSIONS.values().stream().collect(Collectors.collectingAndThen(
+                Collectors.toList(), Collections::unmodifiableList));
     }
 
     static void register(TradingSession session) {

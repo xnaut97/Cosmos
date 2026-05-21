@@ -14,12 +14,9 @@ public final class SyntaxParser {
 
     public SyntaxParser() {
         Map<Class<? extends CommandParam>, CommandParameterResolver<? extends CommandParam>> resolvers = new LinkedHashMap<>();
-        resolvers.put(StringParam.class, new CommandParameterResolver<StringParam>() {
-            @Override
-            public Object resolve(CommandSender sender, StringParam param, String input) throws SyntaxParseException {
-                validate(param, input);
-                return input;
-            }
+        resolvers.put(StringParam.class, (CommandParameterResolver<StringParam>) (sender, param, input) -> {
+            validate(param, input);
+            return input;
         });
         resolvers.put(ArrayParam.class, new CommandParameterResolver<ArrayParam>() {
             @Override
@@ -28,23 +25,17 @@ public final class SyntaxParser {
                 return input;
             }
         });
-        resolvers.put(IntParam.class, new CommandParameterResolver<IntParam>() {
-            @Override
-            public Object resolve(CommandSender sender, IntParam param, String input) throws SyntaxParseException {
-                validate(param, input);
-                try {
-                    return Integer.parseInt(input);
-                } catch (NumberFormatException e) {
-                    throw new SyntaxParseException("Cannot parse integer");
-                }
+        resolvers.put(IntParam.class, (CommandParameterResolver<IntParam>) (sender, param, input) -> {
+            validate(param, input);
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                throw new SyntaxParseException("Cannot parse integer");
             }
         });
-        resolvers.put(DoubleParam.class, new CommandParameterResolver<DoubleParam>() {
-            @Override
-            public Object resolve(CommandSender sender, DoubleParam param, String input) throws SyntaxParseException {
-                validate(param, input);
-                return Double.parseDouble(input);
-            }
+        resolvers.put(DoubleParam.class, (CommandParameterResolver<DoubleParam>) (sender, param, input) -> {
+            validate(param, input);
+            return Double.parseDouble(input);
         });
         resolvers.put(FloatParam.class, new CommandParameterResolver<FloatParam>() {
             @Override
