@@ -7,9 +7,11 @@ import com.zaxxer.hikari.HikariDataSource;
 import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.function.Consumer;
 
 @Getter
 public abstract class Database implements DatabaseConnection {
@@ -183,7 +185,7 @@ public abstract class Database implements DatabaseConnection {
 
     public void update(
             String sql,
-            StatementConsumer consumer
+            Consumer<PreparedStatement> consumer
     ) {
 
         try (
@@ -200,13 +202,11 @@ public abstract class Database implements DatabaseConnection {
         }
     }
 
-    public <T> List<T> query(
+    public void query(
             String sql,
-            StatementConsumer consumer,
-            ResultMapper<T> mapper
+            Consumer<PreparedStatement> consumer,
+            Consumer<ResultSet> consumerResult
     ) {
-
-        List<T> results = new ArrayList<T>();
 
         try (
                 Connection connection = getConnection();
@@ -215,16 +215,13 @@ public abstract class Database implements DatabaseConnection {
 
             consumer.accept(statement);
 
-            ResultSet rs = statement.executeQuery();
-
-            while (rs.next()) {
-                results.add(mapper.map(rs));
+            try (ResultSet rs = statement.executeQuery()) {
+                consumerResult.accept(rs);
             }
 
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
-
-        return results;
     }
+
 }
