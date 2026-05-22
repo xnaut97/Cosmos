@@ -2,4 +2,4 @@ jdk:
   - openjdk17
 
 install:
-  - mvn -B clean install -DskipTests
+  - mvn -B clean install -DskipTests -pl '!cosmos-main'
