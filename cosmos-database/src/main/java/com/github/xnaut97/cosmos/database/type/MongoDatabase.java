@@ -41,6 +41,24 @@ public class MongoDatabase implements DatabaseConnection {
     }
 
     @Override
+    public boolean isConnected() {
+
+        try {
+
+            if (client == null || database == null) {
+                return false;
+            }
+
+            database.runCommand(new Document("ping", 1));
+
+            return true;
+
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+    @Override
     public void connect() {
 
         try {
