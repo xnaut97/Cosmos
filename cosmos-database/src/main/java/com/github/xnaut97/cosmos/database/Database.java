@@ -30,6 +30,25 @@ public abstract class Database implements DatabaseConnection {
         this.dialect = dialect;
     }
 
+    @Override
+    public boolean isConnected() {
+
+        try {
+
+            if (dataSource == null || dataSource.isClosed()) {
+                return false;
+            }
+
+            try (Connection connection = dataSource.getConnection()) {
+                return connection.isValid(2);
+            }
+
+        } catch (SQLException ex) {
+            return false;
+        }
+    }
+
+    @Override
     public void connect() {
 
         try {
@@ -47,10 +66,21 @@ public abstract class Database implements DatabaseConnection {
 
             this.dataSource = new HikariDataSource(config);
 
+            // Force actual connection test
+            if (!isConnected()) {
+                throw new SQLException("Failed to validate database connection.");
+            }
+
             plugin.getLogger().info("Connected to database.");
 
         } catch (Exception ex) {
+
             plugin.getLogger().severe("Failed to connect database.");
+
+            if (dataSource != null) {
+                dataSource.close();
+            }
+
             throw new RuntimeException(ex);
         }
     }
