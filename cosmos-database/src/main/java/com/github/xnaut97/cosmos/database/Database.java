@@ -1,5 +1,7 @@
 package com.github.xnaut97.cosmos.database;
 
+import com.github.xnaut97.cosmos.database.consumer.ResultSetConsumer;
+import com.github.xnaut97.cosmos.database.consumer.StatementConsumer;
 import com.github.xnaut97.cosmos.database.credentials.DatabaseCredentials;
 import com.github.xnaut97.cosmos.database.dialect.DatabaseDialect;
 import com.zaxxer.hikari.HikariConfig;
@@ -185,7 +187,7 @@ public abstract class Database implements DatabaseConnection {
 
     public void update(
             String sql,
-            Consumer<PreparedStatement> consumer
+            StatementConsumer consumer
     ) {
 
         try (
@@ -204,8 +206,8 @@ public abstract class Database implements DatabaseConnection {
 
     public void query(
             String sql,
-            Consumer<PreparedStatement> consumer,
-            Consumer<ResultSet> consumerResult
+            StatementConsumer statementConsumer,
+            ResultSetConsumer resultSetConsumer
     ) {
 
         try (
@@ -213,10 +215,10 @@ public abstract class Database implements DatabaseConnection {
                 PreparedStatement statement = connection.prepareStatement(sql)
         ) {
 
-            consumer.accept(statement);
+            statementConsumer.accept(statement);
 
             try (ResultSet rs = statement.executeQuery()) {
-                consumerResult.accept(rs);
+                resultSetConsumer.accept(rs);
             }
 
         } catch (Exception ex) {
