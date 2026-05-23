@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.github.xnaut97</groupId>
+        <groupId>io.gitlab.xnaut97</groupId>
         <artifactId>cosmos</artifactId>
         <version>1.0.0</version>
 
@@ -18,16 +18,13 @@
     <description>Core plugin bootstrap and shared library loading utilities for Cosmos.</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.xnaut97</groupId>
+            <groupId>io.gitlab.xnaut97</groupId>
             <artifactId>cosmos-utilities</artifactId>
         </dependency>
     </dependencies>

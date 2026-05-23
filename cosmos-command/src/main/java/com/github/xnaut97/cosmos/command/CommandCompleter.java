@@ -8,8 +8,8 @@ import com.github.xnaut97.cosmos.command.syntax.SyntaxMatch;
 import lombok.Getter;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,7 +26,7 @@ final class CommandCompleter {
         this.commands = command.getArguments();
     }
 
-    public @Nonnull List<String> onTabComplete(CommandSender sender, String[] args) {
+    public @NotNull List<String> onTabComplete(CommandSender sender, String[] args) {
         if (args.length == 0)
             return Collections.emptyList();
 

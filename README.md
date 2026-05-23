@@ -153,7 +153,7 @@ Replace `MODULE_NAME` with the module you want to use.
 
 ```xml
 <dependency>
-    <groupId>com.github.xnaut97</groupId>
+    <groupId>io.gitlab.xnaut97</groupId>
     <artifactId>MODULE_NAME</artifactId>
     <version>VERSION</version>
 </dependency>
@@ -163,7 +163,7 @@ Example:
 
 ```xml
 <dependency>
-    <groupId>com.github.xnaut97</groupId>
+    <groupId>io.gitlab.xnaut97</groupId>
     <artifactId>cosmos-menu</artifactId>
     <version>1.0.0</version>
 </dependency>
