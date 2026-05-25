@@ -136,18 +136,13 @@ Cosmos centralizes these systems into reusable modules designed for:
 
 # Installation
 
+Cosmos is available on Maven Central.
+
+No additional repository configuration is required.
+
+---
+
 ## Maven
-
-```xml
-<repositories>
-    <repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-    </repository>
-</repositories>
-```
-
-## Dependency
 
 Replace `MODULE_NAME` with the module you want to use.
 
@@ -155,7 +150,7 @@ Replace `MODULE_NAME` with the module you want to use.
 <dependency>
     <groupId>io.gitlab.xnaut97</groupId>
     <artifactId>MODULE_NAME</artifactId>
-    <version>VERSION</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 
@@ -168,6 +163,48 @@ Example:
     <version>1.0.0</version>
 </dependency>
 ```
+
+---
+
+## Gradle (Groovy DSL)
+
+```gradle
+implementation 'io.gitlab.xnaut97:MODULE_NAME:1.0.0'
+```
+
+Example:
+
+```gradle
+implementation 'io.gitlab.xnaut97:cosmos-menu:1.0.0'
+```
+
+---
+
+## Gradle (Kotlin DSL)
+
+```kotlin
+implementation("io.gitlab.xnaut97:MODULE_NAME:1.0.0")
+```
+
+Example:
+
+```kotlin
+implementation("io.gitlab.xnaut97:cosmos-menu:1.0.0")
+```
+
+---
+
+## Available Modules
+
+| Module | Artifact |
+|---|---|
+| Menu Framework | `cosmos-menu` |
+| Command Framework | `cosmos-command` |
+| Input System | `cosmos-input` |
+| Utilities | `cosmos-utilities` |
+| Core APIs | `cosmos-core` |
+
+---
 
 ---
 
