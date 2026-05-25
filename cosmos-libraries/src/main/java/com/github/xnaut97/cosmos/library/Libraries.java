@@ -43,42 +43,42 @@ public enum Libraries implements LibraryObject {
     COSMOS_CORE(
             "io.gitlab.xnaut97",
             "cosmos-core",
-            "1.0.1b",
+            "1.0.1c",
             "cosmos_core_library",
             null
     ),
     COSMOS_DATABASE(
             "io.gitlab.xnaut97",
             "cosmos-database",
-            "1.0.1b",
+            "1.0.1c",
             "cosmos_database_library",
             null
     ),
     COSMOS_MENU(
             "io.gitlab.xnaut97",
             "cosmos-menu",
-            "1.0.1b",
+            "1.0.1c",
             "cosmos_menu_library",
             null
     ),
     COSMOS_COMMAND(
             "io.gitlab.xnaut97",
             "cosmos-command",
-            "1.0.1b",
+            "1.0.1c",
             "cosmos_command_library",
             null
     ),
     COSMOS_INPUT(
             "io.gitlab.xnaut97",
             "cosmos-input",
-            "1.0.1b",
+            "1.0.1c",
             "cosmos_input_library",
             null
     ),
     COSMOS_UTILITIES(
             "io.gitlab.xnaut97",
             "cosmos-utilities",
-            "1.0.1b",
+            "1.0.1c",
             "cosmos_utilities_library",
             null
     ),

@@ -7,7 +7,7 @@
     <parent>
         <groupId>io.gitlab.xnaut97</groupId>
         <artifactId>cosmos</artifactId>
-        <version>1.0.1b</version>
+        <version>1.0.1c</version>
     </parent>
 
     <artifactId>cosmos-database</artifactId>
