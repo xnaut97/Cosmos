@@ -6,7 +6,7 @@
 
     <groupId>io.gitlab.xnaut97</groupId>
     <artifactId>cosmos</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.1b</version>
     <packaging>pom</packaging>
 
     <name>Cosmos</name>
