@@ -37,6 +37,7 @@
 
     <modules>
         <module>cosmos-utilities</module>
+        <module>cosmos-libraries</module>
         <module>cosmos-core</module>
         <module>cosmos-database</module>
         <module>cosmos-menu</module>
@@ -87,6 +88,11 @@
     <dependencyManagement>
         <dependencies>
 
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>cosmos-libraries</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>cosmos-core</artifactId>
