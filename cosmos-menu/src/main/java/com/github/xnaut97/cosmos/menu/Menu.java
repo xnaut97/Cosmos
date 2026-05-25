@@ -9,8 +9,7 @@ import com.github.xnaut97.cosmos.menu.component.SlotComponent;
 import com.github.xnaut97.cosmos.menu.component.StaticItemComponent;
 import com.github.xnaut97.cosmos.menu.state.MenuState;
 import com.github.xnaut97.cosmos.menu.state.TransactionState;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
-import lombok.AccessLevel;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -33,7 +32,7 @@ import java.util.function.Consumer;
 import java.util.function.IntPredicate;
 import java.util.function.Supplier;
 
-@Getter(AccessLevel.PROTECTED)
+@Getter
 public abstract class Menu implements InventoryHolder {
 
     private final UUID uuid = UUID.randomUUID();
@@ -67,14 +66,6 @@ public abstract class Menu implements InventoryHolder {
         this.inventory = Bukkit.createInventory(this, size, title);
     }
 
-    public Plugin getPlugin() {
-        return plugin;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
     @Override
     public Inventory getInventory() {
         return inventory;
@@ -84,7 +75,7 @@ public abstract class Menu implements InventoryHolder {
         Bukkit.getPluginManager().registerEvents(new Listener() {
             @EventHandler
             public void onClose(InventoryCloseEvent event) {
-                Menu menu = menuFrom(event.getInventory());
+                Menu menu = getMenu(event.getInventory());
                 if (menu != null) {
                     menu.onClose(event);
                 }
@@ -92,7 +83,7 @@ public abstract class Menu implements InventoryHolder {
 
             @EventHandler
             public void onOpen(InventoryOpenEvent event) {
-                Menu menu = menuFrom(event.getInventory());
+                Menu menu = getMenu(event.getInventory());
                 if (menu != null) {
                     menu.onOpen(event);
                 }
@@ -101,7 +92,7 @@ public abstract class Menu implements InventoryHolder {
             @EventHandler
             public void onClick(InventoryClickEvent event) {
                 Inventory topInventory = event.getView().getTopInventory();
-                Menu menu = menuFrom(topInventory);
+                Menu menu = getMenu(topInventory);
                 if (menu != null) {
                     menu.onClick(event);
                 }
@@ -110,7 +101,7 @@ public abstract class Menu implements InventoryHolder {
             @EventHandler
             public void onDrag(InventoryDragEvent event) {
                 Inventory topInventory = event.getView().getTopInventory();
-                Menu menu = menuFrom(topInventory);
+                Menu menu = getMenu(topInventory);
                 if (menu != null) {
                     menu.onDrag(event);
                 }
@@ -118,7 +109,7 @@ public abstract class Menu implements InventoryHolder {
         }, plugin);
     }
 
-    private static Menu menuFrom(Inventory inventory) {
+    private static Menu getMenu(Inventory inventory) {
         if (inventory == null) {
             return null;
         }
@@ -134,10 +125,21 @@ public abstract class Menu implements InventoryHolder {
 
     public void open(Player player) {
         ensureMainThread();
+
+        Bukkit.getLogger().info("[Menu] Opening " + getClass().getSimpleName());
+
         this.player = Objects.requireNonNull(player, "player");
 
+        Bukkit.getLogger().info("[Menu] Calling setup()");
+
         setup();
+
+        Bukkit.getLogger().info("[Menu] setup() completed");
+
         renderComponents();
+
+        Bukkit.getLogger().info("[Menu] Opening inventory");
+
         player.openInventory(getInventory());
     }
 

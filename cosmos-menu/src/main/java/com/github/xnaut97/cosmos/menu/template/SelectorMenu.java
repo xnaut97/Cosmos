@@ -3,7 +3,7 @@ package com.github.xnaut97.cosmos.menu.template;
 import com.cryptomorin.xseries.XMaterial;
 import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.type.PaginationMenu;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;

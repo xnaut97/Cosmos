@@ -4,12 +4,12 @@ import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.animation.Animation;
 import com.github.xnaut97.cosmos.menu.animation.abstraction.AbstractRepeatingAnimation;
 import com.github.xnaut97.cosmos.menu.animation.utility.AnimationItems;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public final class AnimationPreviewMenu<P extends Plugin> extends Menu {
+public final class AnimationPreviewMenu extends Menu {
 
     private static final int BACK_SLOT = 45;
     private static final int TOGGLE_SLOT = 47;
@@ -24,7 +24,7 @@ public final class AnimationPreviewMenu<P extends Plugin> extends Menu {
     private boolean animationActive;
     private boolean animationPaused;
 
-    AnimationPreviewMenu(P plugin, AnimationDemo demo) {
+    AnimationPreviewMenu(Plugin plugin, AnimationDemo demo) {
         super(plugin, 6, "&8Animation: " + demo.getDisplayName());
         this.demo = demo;
     }
@@ -48,7 +48,7 @@ public final class AnimationPreviewMenu<P extends Plugin> extends Menu {
                 .build())
                 .onClick(event -> {
                     event.setCancelled(true);
-                    new AnimationListMenu<>(getPlugin()).open(getPlayer());
+                    new AnimationListMenu(getPlugin()).open(getPlayer());
                 });
 
         renderLifecycleControls();

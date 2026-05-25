@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 
 public class PlayerUtil {
 
-    private static final Map<UUID, Map<String, Long>> cooldowns = Maps.newHashMap();
-
     public static void sendMessages(CommandSender sender, String... msg) {
         if(msg == null) return;
 

@@ -1,4 +1,4 @@
-package com.github.xnaut97.cosmos.utilities;
+package com.github.xnaut97.cosmos.utilities.text;
 
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -20,7 +20,6 @@ public class ClickableText {
         this.text = text.replace("&", "§");
     }
 
-    @SuppressWarnings("deprecation")
     public ClickableText setHoverAction(HoverEvent.Action action, String... content) {
         TextComponent[] texts = Arrays.stream(content)
                 .map(e -> new TextComponent(e.replace("&", "§")))

@@ -4,7 +4,7 @@ import com.github.xnaut97.cosmos.command.param.CommandParam;
 import com.github.xnaut97.cosmos.command.param.ParamPriority;
 import com.github.xnaut97.cosmos.command.param.StringParam;
 import com.github.xnaut97.cosmos.command.syntax.CommandSyntax;
-import com.github.xnaut97.cosmos.utilities.ClickableText;
+import com.github.xnaut97.cosmos.utilities.text.ClickableText;
 import com.google.common.collect.Lists;
 import net.md_5.bungee.api.chat.*;
 import org.bukkit.command.CommandSender;

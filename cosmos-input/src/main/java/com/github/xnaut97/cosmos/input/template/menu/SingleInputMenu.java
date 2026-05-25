@@ -2,7 +2,7 @@ package com.github.xnaut97.cosmos.input.template.menu;
 
 import com.cryptomorin.xseries.XMaterial;
 import com.github.xnaut97.cosmos.menu.Menu;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;

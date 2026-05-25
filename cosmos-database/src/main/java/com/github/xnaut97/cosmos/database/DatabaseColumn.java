@@ -11,6 +11,14 @@ public class DatabaseColumn {
     private final boolean nullable;
     private final boolean primaryKey;
 
+    public DatabaseColumn(ColumnType type, String name) {
+        this(name, type, false, false);
+    }
+
+    public DatabaseColumn(ColumnType type, String name, boolean nullable) {
+        this(name, type, nullable, false);
+    }
+
     public DatabaseColumn(
             String name,
             ColumnType type,

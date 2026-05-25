@@ -1,6 +1,6 @@
 package com.github.xnaut97.cosmos.listener;
 
-import com.github.xnaut97.cosmos.utilities.ClassScanner;
+import com.github.xnaut97.cosmos.utilities.java.ClassScanner;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -41,6 +41,8 @@ public class ListenerManager {
                 BaseListener.class,
                 new Class<?>[]{Plugin.class},
                 new Object[]{getPlugin()}, listener -> {
+                    if(!listener.canRegister()) return;
+
                     Bukkit.getPluginManager().registerEvents(listener, getPlugin());
                     this.listeners.add(listener);
                 }

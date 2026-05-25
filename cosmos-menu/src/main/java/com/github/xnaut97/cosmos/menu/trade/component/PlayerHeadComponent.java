@@ -3,7 +3,7 @@ package com.github.xnaut97.cosmos.menu.trade.component;
 import com.cryptomorin.xseries.XMaterial;
 import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.component.MenuComponent;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import com.github.xnaut97.cosmos.utilities.SkullProfileService;
 import com.mojang.authlib.GameProfile;
 import lombok.RequiredArgsConstructor;

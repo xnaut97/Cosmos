@@ -1,4 +1,4 @@
-package com.github.xnaut97.cosmos.utilities;
+package com.github.xnaut97.cosmos.utilities.java;
 
 import org.bukkit.plugin.Plugin;
 
@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -35,8 +34,11 @@ public class ClassScanner {
 
     public Set<Class<?>> scan(String packageName) {
         String path = packageName.replace('.', '/');
-        URL url = Thread.currentThread().getContextClassLoader().getResource(path);
-        if (url == null) return new HashSet<>();
+        URL url = plugin.getClass().getClassLoader().getResource(path);
+        if (url == null) {
+            plugin.getLogger().warning("Unable to locate " + packageName);
+            return new HashSet<>();
+        }
 
         switch (url.getProtocol()) {
             case "file":

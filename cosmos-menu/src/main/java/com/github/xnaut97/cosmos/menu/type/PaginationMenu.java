@@ -2,8 +2,9 @@ package com.github.xnaut97.cosmos.menu.type;
 
 import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.state.PagedMenuState;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -89,13 +90,24 @@ public abstract class PaginationMenu extends Menu {
     @Override
     public void onOpen(InventoryOpenEvent event) {
         super.onOpen(event);
-        render();
+        refresh();
     }
 
     public void refresh() {
+        Bukkit.getLogger().info("[PaginationMenu] Refreshing " + getClass().getSimpleName());
+
         clearContents();
+
+        Bukkit.getLogger().info("[PaginationMenu] Calling setup()");
+
         setup();
+
+        Bukkit.getLogger().info("[PaginationMenu] Contents size = " + contents.size());
+
         render();
+
+        Bukkit.getLogger().info("[PaginationMenu] Render completed");
+
         renderComponents();
     }
 

@@ -6,7 +6,7 @@
 
     <groupId>io.gitlab.xnaut97</groupId>
     <artifactId>cosmos</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>pom</packaging>
 
     <name>Cosmos</name>
@@ -75,6 +75,12 @@
             <version>${spigot-api.version}</version>
             <scope>provided</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.jspecify</groupId>
+            <artifactId>jspecify</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -151,6 +157,7 @@
                 <scope>provided</scope>
                 <optional>true</optional>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 

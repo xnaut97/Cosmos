@@ -1,13 +1,13 @@
 package com.github.xnaut97.cosmos.menu.preview;
 
 import com.github.xnaut97.cosmos.menu.type.PaginationMenu;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class AnimationListMenu<P extends Plugin> extends PaginationMenu {
+public class AnimationListMenu extends PaginationMenu {
 
-    public AnimationListMenu(P plugin) {
+    public AnimationListMenu(Plugin plugin) {
         super(plugin, 6, "&8Animation Gallery");
         setSlot(10, 43);
     }

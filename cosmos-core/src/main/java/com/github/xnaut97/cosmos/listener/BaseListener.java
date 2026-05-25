@@ -11,4 +11,8 @@ public abstract class BaseListener implements Listener {
 
     private final Plugin plugin;
 
+    public boolean canRegister() {
+        return true;
+    }
+
 }

@@ -1,8 +1,7 @@
-package com.github.xnaut97.cosmos.utilities;
+package com.github.xnaut97.cosmos.utilities.item;
 
 import com.cryptomorin.xseries.XEnchantment;
-import com.cryptomorin.xseries.reflection.XReflection;
-import com.cryptomorin.xseries.reflection.aggregate.VersionHandle;
+import com.github.xnaut97.cosmos.utilities.SkullProfileService;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;

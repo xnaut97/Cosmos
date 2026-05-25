@@ -7,6 +7,7 @@ import com.github.xnaut97.cosmos.library.Libraries;
 import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.trade.TradingSession;
 import com.github.xnaut97.cosmos.menu.trade.TradingSessionManager;
+import com.github.xnaut97.cosmos.menu.MenuRegistry;
 import lombok.Getter;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.event.HandlerList;
@@ -19,6 +20,8 @@ public final class CosmosPlugin extends JavaPlugin {
 
     private TradeCommand tradeCommand;
     private LibraryManager libraryManager;
+    private MenuRegistry menuRegistry;
+    private MenuCommand menuCommand;
 
     @Override
     public void onLoad() {
@@ -52,7 +55,9 @@ public final class CosmosPlugin extends JavaPlugin {
 
         Menu.registerListeners(this);
         TradingSessionManager.registerListeners(this);
+        this.menuRegistry = new MenuRegistry(this);
 
+        this.menuCommand = new MenuCommand(this);
         this.tradeCommand = new TradeCommand(this);
     }
 
@@ -62,6 +67,9 @@ public final class CosmosPlugin extends JavaPlugin {
 
         Menu.forceCloseAll();
         HandlerList.unregisterAll(this);
+
+        if(this.menuCommand != null)
+            this.menuCommand.unregister();
 
         if(this.tradeCommand != null)
             this.tradeCommand.unregister();

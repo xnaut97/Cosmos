@@ -4,7 +4,7 @@ import com.github.xnaut97.cosmos.menu.Menu;
 import com.github.xnaut97.cosmos.menu.component.MenuComponent;
 import com.github.xnaut97.cosmos.menu.trade.TradingParticipant;
 import com.github.xnaut97.cosmos.menu.trade.TradingSession;
-import com.github.xnaut97.cosmos.utilities.ItemCreator;
+import com.github.xnaut97.cosmos.utilities.item.ItemCreator;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;

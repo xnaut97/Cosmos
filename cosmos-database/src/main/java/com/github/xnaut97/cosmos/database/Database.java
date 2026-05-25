@@ -171,6 +171,28 @@ public abstract class Database implements DatabaseConnection {
         execute(builder.toString());
     }
 
+    public void addColumn(String table, DatabaseColumn column) {
+
+        if (columnExists(table, column.getName())) {
+            return;
+        }
+
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("ALTER TABLE `")
+                .append(table)
+                .append("` ADD COLUMN `")
+                .append(column.getName())
+                .append("` ")
+                .append(dialect.getType(column.getType()));
+
+        if (!column.isNullable()) {
+            builder.append(" NOT NULL");
+        }
+
+        execute(builder.toString());
+    }
+
     public void execute(String sql) {
 
         try (
